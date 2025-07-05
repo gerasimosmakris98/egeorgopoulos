@@ -16,10 +16,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Default admin credentials (change these!)
+// Default admin credentials
 const DEFAULT_ADMIN = {
-  email: 'admin@efstathios.com',
-  password: 'admin123',
+  email: 'stgeorgo141@gmail.com',
+  password: 'Efstathios2025!',
   id: 'admin-1',
   role: 'admin' as const
 };

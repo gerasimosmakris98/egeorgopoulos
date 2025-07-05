@@ -59,7 +59,7 @@ const AdminLogin: React.FC = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@efstathios.com"
+                  placeholder="stgeorgo141@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
@@ -93,8 +93,8 @@ const AdminLogin: React.FC = () => {
           <div className="mt-4 p-3 bg-muted/50 rounded-lg">
             <p className="text-xs text-muted-foreground text-center">
               <strong>Default credentials:</strong><br />
-              Email: admin@efstathios.com<br />
-              Password: admin123
+              Email: stgeorgo141@gmail.com<br />
+              Password: Efstathios2025!
             </p>
           </div>
         </CardContent>

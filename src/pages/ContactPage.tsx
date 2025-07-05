@@ -1,11 +1,64 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Linkedin, Globe, MessageCircle, Send, Phone, ExternalLink } from "lucide-react";
-import { contactInfo, languages, collaborationAreas, quickActions } from "@/data/contactData";
+import { useData } from "@/contexts/DataContext";
 
 const ContactPage = () => {
+  const { contactInfo: dataContactInfo } = useData();
+  
+  // Use contactData for structure, will be updated through admin
+  const contactInfo = [
+    {
+      label: "Email",
+      value: dataContactInfo.email,
+      href: `mailto:${dataContactInfo.email}`,
+      icon: Mail,
+      description: "Best way to reach me for professional inquiries"
+    },
+    {
+      label: "LinkedIn",
+      value: "Professional Profile",
+      href: "https://www.linkedin.com/in/efstathios-georgopoulos/",
+      icon: Linkedin, 
+      description: "Connect for professional networking and industry insights"
+    },
+    {
+      label: "Location",
+      value: dataContactInfo.location,
+      icon: Globe,
+      description: "Available for remote work and local meetings"
+    }
+  ];
+
+  const languages = [
+    { language: "Greek", level: "Native", proficiency: 100 },
+    { language: "English", level: "Fluent", proficiency: 95 },
+    { language: "Spanish", level: "Fluent", proficiency: 90 }
+  ];
+
+  const collaborationAreas = [
+    "AML/CFT Compliance", "Financial Crime Investigation", "Blockchain Analysis", 
+    "KYC/CDD Procedures", "Regulatory Compliance", "Risk Assessment",
+    "Transaction Monitoring", "Fraud Detection", "Digital Asset Compliance",
+    "Training & Development", "Process Optimization", "Quality Assurance"
+  ];
+
+  const quickActions = [
+    {
+      label: "Send Email",
+      href: `mailto:${dataContactInfo.email}`,
+      icon: Mail,
+      variant: "default" as const
+    },
+    {
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/in/efstathios-georgopoulos/",
+      icon: Linkedin,
+      variant: "outline" as const
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-background py-16 md:py-24">
       <div className="container mx-auto px-4 md:px-6">
@@ -35,32 +88,9 @@ const ContactPage = () => {
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-foreground mb-2 text-base md:text-lg flex items-center gap-2">
                           {contact.label}
-                          {contact.methods && contact.methods[0]?.flag && (
-                            <span className="text-lg">{contact.methods[0].flag}</span>
-                          )}
                         </h3>
                         
-                        {/* Contact Methods */}
-                        {contact.methods ? (
-                          <div className="space-y-3 mb-3">
-                            {contact.methods.map((method, methodIndex) => (
-                              <div key={methodIndex} className="flex items-center gap-2">
-                                <a 
-                                  href={method.href}
-                                  className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm md:text-base font-medium"
-                                  target={method.href.startsWith('http') ? '_blank' : undefined}
-                                  rel={method.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                                >
-                                  <method.icon className="w-4 h-4" />
-                                  <span>{method.label}</span>
-                                  <span className="text-xs text-muted-foreground/70">({method.description})</span>
-                                  {method.href.startsWith('http') && <ExternalLink className="w-3 h-3" />}
-                                </a>
-                              </div>
-                            ))}
-                            <p className="text-sm md:text-base text-muted-foreground font-medium">{contact.value}</p>
-                          </div>
-                        ) : contact.href ? (
+                        {contact.href ? (
                           <a 
                             href={contact.href}
                             className="text-muted-foreground hover:text-primary transition-colors text-sm md:text-lg font-medium mb-2 block break-all"
