@@ -1,371 +1,308 @@
 
-
-# Major UI/UX Upgrade - Version 2.0
+# UI/UX Continuation & Profile Migration - Version 2.1
 
 ## Overview
 
-This comprehensive upgrade transforms the portfolio into a modern, premium dark glassmorphism experience with enhanced security, AI chatbot integration, LinkedIn article publishing capabilities, and improved contact flow that prioritizes privacy.
+This upgrade continues the glassmorphism UI enhancement, migrates the profile to the latest LinkedIn version, adds new admin-managed pages (Skills, Languages, Services), and makes all content fully editable via `/admin` without losing existing data.
 
 ---
 
-## Phase 1: Security Fixes (Critical)
+## Profile Data Migration (From PDF)
 
-### 1.1 Fix Database Security Vulnerabilities
+### Updated Professional Information
 
-Based on the security scan findings, the following issues need immediate attention:
+Based on the uploaded LinkedIn profile PDF, the following updates will be applied:
 
-| Issue | Solution |
-|-------|----------|
-| Personal Contact Info Exposed | Create a view (`contact_info_public`) that excludes email/phone, deny direct SELECT on base table |
-| Unauthorized Role Assignment | Add INSERT/UPDATE/DELETE deny policies to `user_roles` table |
-| RLS Policy Always True (analytics INSERT) | Change to authenticated-only or add rate limiting via edge function |
-| RLS Policy Always True (cookie_consents INSERT) | Keep for functionality but consider edge function approach |
-| Leaked Password Protection | Enable via auth configuration |
+| Field | Current Value | Updated Value |
+|-------|---------------|---------------|
+| Summary | 3+ years expertise | **4+ years** - fortifying global finance |
+| Title | QA Analyst | **Financial Crime & Compliance QA Lead** |
+| Description | Basic compliance description | Enhanced summary with Core Competencies |
+| Tech Stack | Not included | Chainalysis, RiskShield, Siron, Oracle, Veriff, Jira, PowerBI, Excel, Dynamics |
+| Credentials | Basic | MBA + Master's FinTech & Blockchain; Master's Compliance (in progress) |
 
-### 1.2 Contact Info Security
+### New Experience Entries to Add
 
-```text
-Current: contact_info table publicly readable with email/phone
-After:   Create view excluding sensitive data:
-         - contact_info_public (id, location, linkedin_url, github_url, availability)
-         - Base table: SELECT policy USING (has_role(auth.uid(), 'admin'))
-```
+| Role | Company | Period |
+|------|---------|--------|
+| Compliance Operations Process Owner | Decubate | Jun 2024 - Sep 2024 |
+| Transaction Monitoring Officer | Decubate.com | Previous |
+| Operations Specialist | Piraeus Bank | Jan 2020 - Aug 2022 |
+| Retention Agent | Cosmote e-Value | Jan 2019 - Nov 2019 |
+| Business Consultant Intern | WaterGasWaste | Aug 2022 - Jan 2023 |
 
----
+### Updated Education
 
-## Phase 2: Enhanced Glassmorphism UI System
-
-### 2.1 New CSS Variables & Enhanced Glass Effects
-
-Upgrade the design system with:
-
-```text
-New glass layers:
-├── .glass-card: Base glassmorphism with subtle blur
-├── .glass-panel: Higher blur, more transparency
-├── .glass-overlay: Floating elements, highest blur
-├── .glass-border: Animated gradient borders
-└── .glass-glow: Subtle glow on hover/focus
-```
-
-### 2.2 Color System Enhancement
-
-```text
-New accents:
-├── --accent-blue: 220 80% 60% (primary accent)
-├── --accent-purple: 270 70% 55% (secondary accent)
-├── --accent-gradient: linear-gradient(135deg, accent-blue, accent-purple)
-└── --glass-highlight: rgba(255, 255, 255, 0.05)
-```
-
-### 2.3 Animation System
-
-New keyframe animations:
-- `fadeInUp`: Content entrance with upward slide
-- `scaleIn`: Modal/popup entrance
-- `shimmer`: Gradient shimmer effect
-- `pulse-glow`: Subtle glow pulse
-- `float`: Gentle floating animation
-- `slide-in-right/left`: Drawer animations
-- `typewriter`: Text typing effect (for chatbot)
+| Degree | Institution | Status |
+|--------|-------------|--------|
+| MBA + Master's FinTech & Blockchain | ENEB Barcelona | Completed (Sep 2024 - Feb 2025) |
+| BA Spanish Language & Literature | National Kapodistrian University of Athens | Completed (Jan 2017 - Sep 2024) |
+| Master's in Compliance | IMF + Universidad Católica de Ávila | In Progress |
 
 ---
 
-## Phase 3: Component Redesign
+## Phase 1: Database Schema Enhancement
 
-### 3.1 Navigation Enhancement
-
-```text
-New Navigation:
-├── Sticky header with enhanced backdrop blur
-├── Animated underline on hover
-├── Mobile slide-out drawer with glass effect
-├── Scroll progress indicator
-└── Theme toggle (if needed later)
-```
-
-### 3.2 Card Components
+### 1.1 New Tables for Extended Content
 
 ```text
-New card styles:
-├── Elevated glass cards with hover lift
-├── Gradient border on focus/hover
-├── Staggered entrance animations
-├── Skeleton loading states
-└── Interactive micro-animations
+skills
+├── id (uuid, primary key)
+├── name (text)
+├── category (text) - Technical, Soft Skills, Tools, Languages
+├── proficiency (integer 1-100)
+├── icon (text, optional)
+├── order_index (integer)
+├── visible (boolean)
+└── created_at (timestamp)
+
+languages
+├── id (uuid, primary key)
+├── name (text)
+├── proficiency (text) - Native, Fluent, Intermediate, Basic
+├── level (integer 1-5)
+├── order_index (integer)
+├── visible (boolean)
+└── created_at (timestamp)
+
+services
+├── id (uuid, primary key)
+├── title (text)
+├── description (text)
+├── icon (text)
+├── features (text array)
+├── order_index (integer)
+├── visible (boolean)
+└── created_at (timestamp)
+
+about_content
+├── id (uuid, primary key)
+├── summary (text)
+├── paragraphs (text array)
+├── highlights (jsonb) - title, description, icon, color
+├── features (jsonb) - title, value, description
+├── tech_stack (text array)
+└── updated_at (timestamp)
 ```
 
-### 3.3 Button Variants
+### 1.2 RLS Policies
 
-```text
-Enhanced buttons:
-├── Primary: Gradient background with glow
-├── Outline: Glass effect with gradient border
-├── Ghost: Subtle glass on hover
-├── Premium: Full gradient with shimmer
-└── Floating: FAB style for chatbot
-```
-
-### 3.4 Form Elements
-
-```text
-Enhanced inputs:
-├── Glass effect backgrounds
-├── Focus gradient borders
-├── Floating labels
-├── Validation animations
-└── Custom select/dropdown styling
-```
+- Public SELECT for all new tables
+- Admin-only INSERT/UPDATE/DELETE using `has_role()` function
 
 ---
 
-## Phase 4: AI Chatbot Integration
+## Phase 2: Enhanced Admin Panel
 
-### 4.1 Chatbot Component Architecture
+### 2.1 New Admin Tabs
 
-```text
-src/components/
-├── chat/
-│   ├── ChatWidget.tsx - Floating button + expandable panel
-│   ├── ChatMessage.tsx - Message bubble with markdown
-│   ├── ChatInput.tsx - Text input with send button
-│   ├── ChatHeader.tsx - Title, minimize, close
-│   └── ChatTypingIndicator.tsx - Animated dots
-```
+Add to the existing admin panel:
 
-### 4.2 Chat Features
+| Tab | Icon | Purpose |
+|-----|------|---------|
+| About | Info | Manage About section content |
+| Skills | Zap | CRUD skills with categories |
+| Languages | Globe | Manage language proficiencies |
+| Services | Briefcase | Services offered section |
+| Messages | MessageSquare | View contact form submissions |
+| Legal | FileText | Edit Privacy, Terms, Cookies content |
 
-- Floating action button (bottom-right corner)
-- Expandable glass panel with slide animation
-- Real-time streaming responses using Lovable AI
-- Markdown rendering for responses
-- Context-aware responses about the portfolio owner
-- Conversation history during session
-- Mobile-responsive design
-
-### 4.3 Edge Function for Chat
+### 2.2 Contact Messages Inbox
 
 ```text
-supabase/functions/chat/index.ts
-├── Uses Lovable AI Gateway (google/gemini-3-flash-preview)
-├── System prompt: Portfolio assistant for Efstathios
-├── Streaming SSE responses
-├── Rate limiting protection
-└── CORS headers
-```
-
-### 4.4 System Prompt Design
-
-The AI will be configured to:
-- Know about Efstathios's background and expertise
-- Answer questions about compliance, AML/CFT, blockchain
-- Direct users to LinkedIn for professional connections
-- Provide information from the portfolio data
-- Be professional, helpful, and concise
-
----
-
-## Phase 5: LinkedIn Article Publishing
-
-### 5.1 Article Editor Enhancement
-
-Add ability to write full articles (not just link to external):
-
-```text
-ArticleEditor enhancements:
-├── Rich text editor for content
-├── Preview mode with glassmorphism styling
-├── Draft/Published status
-├── Category management
-├── SEO fields (meta description, keywords)
-└── LinkedIn share button generator
-```
-
-### 5.2 Database Schema Update
-
-```text
-articles table additions:
-├── content: text (full article content in markdown)
-├── category: text
-├── published: boolean (draft/published)
-├── order_index: integer
-```
-
-### 5.3 Blog Page Enhancement
-
-```text
-New blog features:
-├── Article detail page (/blog/:id)
-├── Category filtering
-├── Search functionality
-├── Estimated read time calculation
-├── Social sharing buttons
-└── Related articles section
-```
-
----
-
-## Phase 6: Contact Flow Redesign
-
-### 6.1 Hide Direct Email/Phone
-
-Replace exposed email with:
-
-```text
-Contact options:
-├── "Contact via LinkedIn" - Primary CTA
-├── "Send Message" - Opens contact form modal
-└── Location (Madrid, Spain) - Keep visible
-```
-
-### 6.2 Contact Form Component
-
-```text
-New ContactForm.tsx:
-├── Glass panel modal
-├── Fields: Name, Email, Subject, Message
-├── Sends via edge function (no exposed email)
-├── Success/Error animations
-├── Rate limiting
-└── Spam protection (honeypot field)
-```
-
-### 6.3 Contact Edge Function
-
-```text
-supabase/functions/send-contact/index.ts
-├── Receives form data
-├── Validates inputs
-├── Stores in contact_messages table
-├── Optional: Email notification to admin
-└── Returns success/error
-```
-
----
-
-## Phase 7: Page Redesigns
-
-### 7.1 Home Page
-
-```text
-Enhanced sections:
-├── Hero with animated gradient background
-├── Floating glass stat cards
-├── Smooth scroll navigation cards
-├── Animated entrance effects
-└── Call-to-action with glow effect
-```
-
-### 7.2 Resume Page
-
-```text
-Enhancements:
-├── Timeline with glass cards
-├── Animated skill bars
-├── Expandable experience details
-├── Education cards with badges
-├── Certification grid with hover effects
-└── Download CV floating button
-```
-
-### 7.3 Blog Page
-
-```text
-Redesign:
-├── Featured article hero card
-├── Masonry-style article grid
-├── Category filter tabs
-├── Search with glass input
-├── Pagination with glass buttons
-└── Article cards with gradient borders
-```
-
-### 7.4 Contact Page
-
-```text
-New design:
-├── Split layout (info + form)
-├── LinkedIn as primary contact
-├── Contact form with glass styling
-├── Language proficiency bars
-├── Collaboration areas as animated badges
-└── Location map placeholder
-```
-
----
-
-## Phase 8: Admin Panel Enhancements
-
-### 8.1 New Admin Sections
-
-Add to AdminPanel.tsx:
-
-| Tab | Purpose |
-|-----|---------|
-| Chat Settings | Manage AI chatbot system prompt |
-| Contact Messages | View/reply to form submissions |
-| SEO Settings | Meta tags, sitemap management |
-
-### 8.2 Contact Messages View
-
-```text
-Features:
-├── Inbox-style message list
-├── Read/Unread status
-├── Reply action (opens email client)
-├── Delete/Archive messages
+ContactMessagesEditor.tsx
+├── List view with read/unread status
+├── Message preview on click
+├── Mark as read functionality
+├── Delete/Archive options
+├── Reply via email link
 └── Search and filter
 ```
 
-### 8.3 Real-time Analytics Dashboard
+### 2.3 About Section Editor
 
 ```text
-Enhanced AnalyticsEditor:
-├── Line chart for views over time
-├── Pie chart for page distribution
-├── Top referrers list
-├── Unique visitors count
-├── Geographic distribution
-└── Device breakdown
+AboutEditor.tsx
+├── Summary text editor
+├── Paragraph array management
+├── Highlights editor (icon, title, description, color)
+├── Features editor (icon, title, value, description)
+├── Tech stack tag manager
+└── Live preview toggle
+```
+
+### 2.4 Skills Editor
+
+```text
+SkillsEditor.tsx
+├── Add/Edit/Delete skills
+├── Category dropdown (Technical, Tools, Soft Skills)
+├── Proficiency slider (0-100%)
+├── Icon picker (Lucide icons)
+├── Drag-to-reorder functionality
+└── Visibility toggle
+```
+
+### 2.5 Languages Editor
+
+```text
+LanguagesEditor.tsx
+├── Language name input
+├── Proficiency level select (Native, Fluent, etc.)
+├── 5-star rating input
+├── Order management
+└── Visibility toggle
 ```
 
 ---
 
-## Phase 9: Performance & Polish
+## Phase 3: New Public Pages
 
-### 9.1 Loading States
-
-```text
-Skeleton components:
-├── CardSkeleton
-├── ArticleSkeleton
-├── TimelineSkeleton
-└── ChartSkeleton
-```
-
-### 9.2 Micro-interactions
+### 3.1 Skills Page (`/skills`)
 
 ```text
-Animations:
-├── Button press feedback
-├── Card hover lift
-├── Badge pop-in
-├── Progress bar fill
-├── Success checkmark
-└── Error shake
+Layout:
+├── Hero section with title and description
+├── Skills by category in tabs
+│   ├── Technical Skills - Grid with progress bars
+│   ├── Tools & Technologies - Icon grid with labels
+│   ├── Soft Skills - Badge cloud
+│   └── Languages - Cards with level indicators
+├── Tech Stack showcase
+└── CTA to Contact
 ```
 
-### 9.3 Accessibility
+### 3.2 Services Page (`/services`)
 
 ```text
-Improvements:
-├── Focus indicators
-├── Keyboard navigation
-├── ARIA labels
-├── Reduced motion support
-├── Color contrast verification
-└── Screen reader announcements
+Layout:
+├── Hero section
+├── Service cards in grid (2x2 or 3x3)
+│   ├── Icon + Title
+│   ├── Description
+│   └── Feature list
+├── Collaboration areas section
+└── CTA with LinkedIn + Contact form
 ```
+
+### 3.3 About Page (`/about`)
+
+```text
+Layout:
+├── Hero with professional photo placeholder
+├── Summary section
+├── Core Competencies grid
+├── Tech Stack badges
+├── Key Highlights cards
+├── Stats/Features section
+└── CTA section
+```
+
+---
+
+## Phase 4: Component Redesigns
+
+### 4.1 Enhanced Hero Component
+
+Update to pull data from Cloud:
+
+- Name, title from `personal_info`
+- Stats from computed counts (experiences, certifications, etc.)
+- Badges from `personal_info.badges`
+- Dynamic CTA buttons
+
+### 4.2 Enhanced About Component
+
+Make fully dynamic:
+
+- Fetch from `about_content` table
+- Highlights from database
+- Features from database
+- Skills pulled from `skills` table
+
+### 4.3 Enhanced Experience Component
+
+Already pulling from `experiences`, but improve display:
+
+- Add timeline connector lines
+- Animate on scroll with intersection observer
+- Collapsible responsibilities sections
+- Filter by company/year
+
+### 4.4 Enhanced Education Component
+
+- Pull from Cloud `education` and `certifications` tables
+- Add certification category filters
+- Credential verification links
+- Animated progress indicators
+
+---
+
+## Phase 5: Navigation Enhancement
+
+### 5.1 Updated Navigation Links
+
+```text
+Navigation:
+├── Home (/)
+├── About (/about)
+├── Resume (/resume)
+├── Skills (/skills)
+├── Services (/services)
+├── Blog (/blog)
+├── Contact (/contact)
+```
+
+### 5.2 Mobile Navigation
+
+- Slide-out drawer with glassmorphism
+- Animated hamburger menu icon
+- Current page indicator
+- Social links in footer
+
+---
+
+## Phase 6: Legal Content Management
+
+### 6.1 Legal Editor Component
+
+```text
+LegalEditor.tsx
+├── Tab for each legal page (Privacy, Terms, Cookies)
+├── Rich text/markdown editor
+├── Last updated timestamp display
+├── Preview in modal
+└── Save with toast confirmation
+```
+
+### 6.2 Dynamic Legal Pages
+
+Update Privacy, Terms, Cookies pages to:
+
+- Fetch content from `legal_content` table
+- Display last updated date
+- Show loading skeleton while fetching
+- Fallback to default content if empty
+
+---
+
+## Phase 7: Data Migration Strategy
+
+### 7.1 Seed Updated Profile Data
+
+Using database INSERT statements to add:
+
+1. **Personal Info**: Updated summary, 4+ years experience
+2. **New Experiences**: Add Piraeus Bank, Cosmote e-Value, WGW
+3. **Skills Table**: Populate with Core Competencies from PDF
+4. **Languages**: Greek (Native), English (Fluent), Spanish (Fluent)
+5. **About Content**: Enhanced paragraphs and highlights
+
+### 7.2 Preserve Existing Data
+
+- Use UPSERT (ON CONFLICT DO UPDATE) where applicable
+- Keep existing article data intact
+- Maintain user-created content priority
 
 ---
 
@@ -373,79 +310,80 @@ Improvements:
 
 | File | Purpose |
 |------|---------|
-| `src/components/chat/ChatWidget.tsx` | Main chat widget |
-| `src/components/chat/ChatMessage.tsx` | Chat message bubble |
-| `src/components/chat/ChatInput.tsx` | Chat input field |
-| `src/components/ContactForm.tsx` | Contact form modal |
-| `src/components/ui/skeleton.tsx` | Loading skeletons |
-| `src/pages/BlogArticle.tsx` | Individual article page |
-| `src/components/admin/ChatSettings.tsx` | AI chat configuration |
-| `src/components/admin/ContactMessages.tsx` | Message inbox |
-| `supabase/functions/chat/index.ts` | AI chat endpoint |
-| `supabase/functions/send-contact/index.ts` | Contact form handler |
+| `src/pages/About.tsx` | Dedicated About page |
+| `src/pages/Skills.tsx` | Skills showcase page |
+| `src/pages/Services.tsx` | Services offered page |
+| `src/components/admin/AboutEditor.tsx` | About section editor |
+| `src/components/admin/SkillsEditor.tsx` | Skills CRUD |
+| `src/components/admin/LanguagesEditor.tsx` | Languages editor |
+| `src/components/admin/ServicesEditor.tsx` | Services editor |
+| `src/components/admin/MessagesEditor.tsx` | Contact messages inbox |
+| `src/components/admin/LegalEditor.tsx` | Legal content editor |
 
 ## Files to Modify
 
 | File | Changes |
 |------|---------|
-| `src/index.css` | Enhanced glass effects, animations |
-| `tailwind.config.ts` | New animation keyframes, colors |
-| `src/App.tsx` | Add chat widget, new routes |
-| `src/components/Layout.tsx` | Enhanced navigation |
-| `src/components/admin/ContactEditor.tsx` | Hide email option |
-| `src/components/admin/ArticleEditor.tsx` | Rich content editor |
-| `src/components/AdminPanel.tsx` | New tabs |
-| `src/pages/Home.tsx` | Glass card redesign |
-| `src/pages/ContactPage.tsx` | Form + LinkedIn focus |
-| `src/pages/BlogListing.tsx` | Grid + categories |
-| `src/data/contactData.ts` | Remove exposed email |
+| `src/App.tsx` | Add new routes |
+| `src/components/AdminPanel.tsx` | Add new tabs |
+| `src/components/Layout.tsx` | Update navigation links |
+| `src/components/Hero.tsx` | Make dynamic from Cloud |
+| `src/components/About.tsx` | Connect to Cloud data |
+| `src/components/Experience.tsx` | Pull from Cloud with filters |
+| `src/components/Education.tsx` | Connect to Cloud tables |
+| `src/contexts/DataContext.tsx` | Add new data types and functions |
+| `src/index.css` | Additional glassmorphism effects |
+| `src/pages/Privacy.tsx` | Dynamic content from Cloud |
+| `src/pages/Terms.tsx` | Dynamic content from Cloud |
+| `src/pages/Cookies.tsx` | Dynamic content from Cloud |
+
+---
 
 ## Database Migrations
 
 | Migration | Purpose |
 |-----------|---------|
-| Create `contact_info_public` view | Hide sensitive contact data |
-| Update `contact_info` RLS | Deny public SELECT on base table |
-| Add policies to `user_roles` | Deny INSERT/UPDATE/DELETE |
-| Create `contact_messages` table | Store form submissions |
-| Add `content`, `category`, `published` to articles | Full articles support |
-| Create `chat_settings` table | Store AI configuration |
+| Create `skills` table | Store skill data with categories |
+| Create `languages` table | Store language proficiencies |
+| Create `services` table | Store services offered |
+| Create `about_content` table | Store About section data |
+| Add RLS policies | Secure new tables |
+| Seed updated profile data | Insert latest CV information |
+| Add new experiences | Piraeus, Cosmote, WGW entries |
 
 ---
 
-## Technical Notes
+## Design Enhancements
 
-### Glass Effect CSS
+### Enhanced Glass Effects
 
 ```text
-.glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
+New CSS classes:
+├── .glass-card-elevated: Higher elevation with glow
+├── .glass-timeline: Timeline connector styling
+├── .glass-progress: Animated progress bars
+├── .glass-input-focus: Focus states with gradient
+└── .glass-overlay-dark: Darker overlay for modals
 ```
 
-### AI Chat Implementation
-
-- Uses Lovable AI Gateway (no API key required)
-- Model: `google/gemini-3-flash-preview`
-- Streaming SSE for real-time responses
-- Session-based conversation history
-- Admin-configurable system prompt
-
-### Contact Form Flow
+### New Animations
 
 ```text
-User fills form
-    ↓
-Edge function receives
-    ↓
-Validates + stores in DB
-    ↓
-Returns success to client
-    ↓
-Admin sees in dashboard
+@keyframes fadeInScale - Scale + fade entrance
+@keyframes slideInLeft - Timeline animations
+@keyframes progressFill - Skill bar animation
+@keyframes pulseGlow - Subtle glow effect
+@keyframes typewriter - Chat/text typing
+```
+
+### Color Enhancements
+
+```text
+New accent colors:
+├── --accent-blue: 220 80% 60%
+├── --accent-green: 150 70% 45%
+├── --accent-purple: 270 65% 55%
+└── --glass-glow: rgba(255, 255, 255, 0.1)
 ```
 
 ---
@@ -454,17 +392,16 @@ Admin sees in dashboard
 
 This upgrade delivers:
 
-1. Fixed security vulnerabilities (contact info, user roles, RLS)
-2. Premium glassmorphism design with layered effects
-3. Smooth animations and micro-interactions
-4. AI chatbot for visitor engagement
-5. Full article writing/publishing from admin
-6. Privacy-focused contact flow (LinkedIn + form)
-7. Enhanced admin dashboard with messages + analytics
-8. Mobile-optimized responsive design
+1. **Profile Migration**: All data from LinkedIn PDF imported to Cloud
+2. **New Pages**: About, Skills, Services - fully admin-managed
+3. **Enhanced Admin**: 6 new tabs for complete content control
+4. **Contact Inbox**: View and manage form submissions
+5. **Legal Management**: Edit Privacy, Terms, Cookies from admin
+6. **Dynamic Components**: Hero, About, Experience all pull from Cloud
+7. **Preserved Data**: No data loss - upsert strategy for updates
+8. **UI Polish**: Enhanced glassmorphism, new animations
 
-**Admin Access:**
+**Admin Credentials:**
 - URL: `/admin`
 - Email: `stgeorgo141@gmail.com`
 - Password: `Efstathios2025!`
-
