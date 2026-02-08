@@ -1,73 +1,66 @@
-# Welcome to your Lovable project
+# Efstathios Georgopoulos | Financial Crime Compliance Expert
 
-## Project info
+A professional portfolio website for Efstathios Georgopoulos, showcasing expertise in:
+*   **Financial Crime Compliance (AML/CFT)**
+*   **Blockchain Forensics**
+*   **Fraud Detection**
 
-**URL**: https://lovable.dev/projects/622290a5-d2df-4fbe-a852-9ae4a275d143
+Built with modern web technologies for high performance and design precision.
 
-## How can I edit this code?
+## 🚀 Tech Stack
 
-There are several ways of editing your application.
+*   **Framework:** [React](https://react.dev/) + [Vite](https://vitejs.dev/)
+*   **Language:** [TypeScript](https://www.typescriptlang.org/)
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+*   **UI Components:** [shadcn/ui](https://ui.shadcn.com/)
+*   **Backend/Auth:** [Supabase](https://supabase.com/)
 
-**Use Lovable**
+## 🛠️ Local Development
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/622290a5-d2df-4fbe-a852-9ae4a275d143) and start prompting.
+Follow these steps to run the project locally on your machine.
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
+*   Node.js (v18 or higher)
+*   npm
 
-**Use your preferred IDE**
+### Installation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/gerasimosmakris98/e-georgopoulos.git
+    cd e-georgopoulos
+    ```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-Follow these steps:
+3.  **Setup Environment Variables:**
+    Ensure you have a `.env` file in the root directory with your Supabase keys:
+    ```env
+    VITE_SUPABASE_URL=your_url_here
+    VITE_SUPABASE_ANON_KEY=your_key_here
+    ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+4.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
+    Open [http://localhost:8080](http://localhost:8080) to view it in your browser.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 📦 Build for Production
 
-# Step 3: Install the necessary dependencies.
-npm i
+To create a production-ready build:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```bash
+npm run build
 ```
 
-**Edit a file directly in GitHub**
+## ☁️ Deployment
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+This project is configured for deployment on **hosting platforms** like Firebase or Vercel.
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/622290a5-d2df-4fbe-a852-9ae4a275d143) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+```bash
+firebase deploy
+```

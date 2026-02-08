@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 const Layout = ({
   children
@@ -10,11 +11,21 @@ const Layout = ({
 }) => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const menuItems = [
     { label: "Home", path: "/" },
@@ -27,67 +38,72 @@ const Layout = ({
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <nav className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+    <div className="min-h-screen bg-background flex flex-col">
+      <nav
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out py-4",
+          isScrolled
+            ? "bg-background/80 backdrop-blur-md shadow-sm border-b border-border/40 py-2"
+            : "bg-transparent border-b border-transparent shadow-none"
+        )}
+      >
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-14 md:h-16">
-            <Link to="/" className="text-lg md:text-xl font-playfair font-bold text-foreground">
+            <Link to="/" className="text-xl md:text-2xl font-playfair font-bold text-foreground">
               E. Georgopoulos
             </Link>
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
               {menuItems.map(item => (
-                <Link 
-                  key={item.path} 
-                  to={item.path} 
-                  className={`text-sm font-medium transition-colors ${
-                    location.pathname === item.path 
-                      ? 'text-foreground' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === item.path
+                      ? 'text-primary font-semibold'
+                      : 'text-muted-foreground'
+                    }`}
                 >
                   {item.label}
                 </Link>
               ))}
             </div>
 
-            <Button variant="outline" size="sm" asChild className="hidden md:inline-flex">
+            <Button variant="outline" size="sm" asChild className="hidden md:inline-flex rounded-full px-6 border-white/10 hover:bg-white/5 hover:text-primary">
               <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
                 LinkedIn
               </a>
             </Button>
 
             {/* Mobile Menu Button */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => setIsMenuOpen(!isMenuOpen)} 
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden h-9 w-9"
             >
-              {isMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
 
           {/* Mobile Menu */}
           {isMenuOpen && (
-            <div className="md:hidden border-t border-border bg-background/95 backdrop-blur">
-              <div className="px-4 py-4 space-y-2">
+            <div className="absolute top-full left-0 right-0 border-t border-border bg-background/95 backdrop-blur-xl animate-in slide-in-from-top-2">
+              <div className="px-4 py-4 space-y-2 container mx-auto">
                 {menuItems.map(item => (
-                  <Link 
-                    key={item.path} 
-                    to={item.path} 
-                    onClick={() => setIsMenuOpen(false)} 
-                    className={`block w-full text-left py-2 text-base transition-colors ${
-                      location.pathname === item.path 
-                        ? 'text-foreground font-medium' 
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`block w-full text-left py-3 text-lg transition-colors border-b border-border/20 last:border-0 ${location.pathname === item.path
+                        ? 'text-primary font-semibold'
+                        : 'text-muted-foreground hover:text-primary'
+                      }`}
                   >
                     {item.label}
                   </Link>
                 ))}
-                <Button variant="outline" size="sm" asChild className="w-full mt-4">
+                <Button variant="outline" size="lg" asChild className="w-full mt-6 rounded-full">
                   <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
                     LinkedIn
                   </a>
@@ -97,25 +113,27 @@ const Layout = ({
           )}
         </div>
       </nav>
-      
-      <main className="flex-1">{children}</main>
-      
-      <footer className="border-t border-border py-6 md:py-8 mt-16">
+
+      {/* 
+        Added 'pt-24' to push content down because header is fixed. 
+        The exact spacing can be adjusted here. 
+      */}
+      <main className="flex-1 pt-32 mobile:pt-24">{children}</main>
+
+      <footer className="border-t border-border py-8 md:py-12 mt-20 bg-muted/20">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <p className="text-sm text-muted-foreground">
-              © 2025 Efstathios Georgopoulos. All rights reserved.
+              © {new Date().getFullYear()} Efstathios Georgopoulos. All rights reserved.
             </p>
-            <div className="flex items-center gap-4 text-sm">
-              <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
+            <div className="flex items-center gap-6 text-sm">
+              <Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">
                 Privacy Policy
               </Link>
-              <span className="text-border">|</span>
-              <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">
                 Terms of Service
               </Link>
-              <span className="text-border">|</span>
-              <Link to="/cookies" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/cookies" className="text-muted-foreground hover:text-primary transition-colors">
                 Cookie Policy
               </Link>
             </div>

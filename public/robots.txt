@@ -1,38 +1,6 @@
-# Search Engine Crawlers
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-# AI Bots
-User-agent: GPTBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Claude-Web
-Allow: /
-
-User-agent: Anthropic-AI
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-# Default
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /api
 
-# Sitemap
-Sitemap: https://e-georgopoulos.lovable.app/sitemap.xml
+Sitemap: https://e-georgopoulos.com/sitemap.xml

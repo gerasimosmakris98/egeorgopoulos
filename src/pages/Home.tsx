@@ -1,73 +1,120 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Linkedin, MapPin, ArrowRight, Sparkles } from "lucide-react";
+import { Linkedin, MapPin, ArrowRight, Sparkles, Download, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useData } from "@/contexts/DataContext";
+import { motion } from "framer-motion";
 
 const Home = () => {
   const { personalInfo } = useData();
-  
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 100, damping: 10 },
+    },
+  };
+
   return (
-    <section className="min-h-screen bg-background relative overflow-hidden">
+    <section className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl floating-animation" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-3xl floating-animation" style={{ animationDelay: '-3s' }} />
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0],
+            opacity: [0.1, 0.2, 0.1],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-1/4 -right-1/4 w-[800px] h-[800px] bg-primary/10 rounded-full blur-3xl"
+        />
+        <motion.div
+           animate={{
+            scale: [1, 1.1, 1],
+            x: [0, 50, 0],
+            opacity: [0.1, 0.2, 0.1],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-accent/10 rounded-full blur-3xl"
+        />
+         <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid-pattern.svg')] opacity-[0.03] z-0" />
       </div>
 
-      <div className="container mx-auto px-4 md:px-6 min-h-screen flex items-center relative z-10">
-        <div className="w-full max-w-4xl mx-auto text-center fade-in-up">
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="w-full max-w-5xl mx-auto text-center"
+        >
           {/* Status Indicator */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-effect mb-8">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-sm text-muted-foreground">Available for opportunities</span>
-          </div>
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-effect mb-8 border border-white/10 backdrop-blur-md shadow-sm">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            </span>
+            <span className="text-sm font-medium text-foreground/80 tracking-wide">Available for opportunities</span>
+          </motion.div>
 
           {/* Main Heading */}
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-playfair font-bold mb-6 leading-tight text-foreground">
-            {personalInfo.name}
-          </h1>
+          <motion.h1
+            variants={itemVariants}
+            className="text-5xl sm:text-6xl lg:text-8xl font-playfair font-bold mb-6 leading-[1.1] tracking-tight text-foreground"
+          >
+            {personalInfo.name.split(" ").map((word, i) => (
+              <span key={i} className="inline-block mr-4 bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
+                {word}
+              </span>
+            ))}
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p variants={itemVariants} className="text-xl sm:text-2xl lg:text-3xl font-light text-foreground/80 mb-8 max-w-3xl mx-auto">
+            {personalInfo.title}
+          </motion.p>
           
-          {/* Status Badges */}
-          <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 px-2">
+           {/* Status Badges */}
+           <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-3 mb-10">
             {personalInfo.badges.map((badge, index) => (
               <Badge 
                 key={index} 
                 variant="secondary" 
-                className="text-xs md:text-sm px-4 py-2 glass-effect border-border/50 hover:border-primary/50 transition-all duration-300"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="text-sm px-4 py-2 glass-effect border-white/10 hover:bg-white/5 transition-all duration-300"
               >
-                <Sparkles className="w-3 h-3 mr-1.5 opacity-60" />
+                <Sparkles className="w-3 h-3 mr-2 text-primary" />
                 {badge}
               </Badge>
             ))}
-          </div>
-          
-          {/* Subtitle */}
-          <p className="text-lg sm:text-xl lg:text-2xl font-medium text-foreground/80 mb-3 px-2">
-            {personalInfo.title}
-          </p>
-          
-          {/* Current Position */}
-          <p className="text-base sm:text-lg text-muted-foreground mb-6 px-2">
-            {personalInfo.currentPosition}
-          </p>
-          
+          </motion.div>
+
           {/* Description */}
-          <p className="text-base md:text-lg text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed px-4">
+          <motion.p variants={itemVariants} className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
             {personalInfo.description}
-          </p>
-          
+          </motion.p>
+
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 px-4">
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center mb-20">
             <Button 
               variant="default" 
               size="lg"
               asChild
-              className="w-full sm:w-auto min-w-[200px] text-base h-14 rounded-xl shadow-premium hover:shadow-glow transition-all duration-300 group"
+              className="group h-14 px-8 text-base rounded-full shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300"
             >
               <Link to="/contact">
-                Get In Touch
+                Let's Collaborate
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
@@ -75,65 +122,54 @@ const Home = () => {
               variant="outline" 
               size="lg"
               asChild
-              className="w-full sm:w-auto min-w-[200px] text-base h-14 rounded-xl glass-effect border-border/50 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300"
+              className="h-14 px-8 text-base rounded-full border-2 hover:bg-muted/50 transition-all duration-300"
             >
-              <a href={personalInfo.linkedInLink} target="_blank" rel="noopener noreferrer">
-                <Linkedin className="mr-2 w-5 h-5" />
-                LinkedIn Profile
+              <a href="/CV_Efstathios_Georgopoulos.pdf" target="_blank" rel="noopener noreferrer">
+                <Download className="mr-2 w-5 h-5" />
+                Download CV
               </a>
             </Button>
-          </div>
+          </motion.div>
 
-          {/* Quick Navigation */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-16 px-2">
-            <Link 
-              to="/resume" 
-              className="glass-effect p-6 rounded-2xl hover:shadow-premium transition-all duration-300 group border border-border/50 hover:border-primary/30"
-            >
-              <h3 className="text-lg md:text-xl font-semibold mb-2 text-foreground group-hover:text-primary transition-colors">
-                Resume & Experience
-              </h3>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Professional journey across Ebury, American Express, and major European banks
-              </p>
-              <ArrowRight className="w-5 h-5 mt-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-2 transition-all" />
-            </Link>
-            
-            <Link 
-              to="/blog" 
-              className="glass-effect p-6 rounded-2xl hover:shadow-premium transition-all duration-300 group border border-border/50 hover:border-primary/30"
-            >
-              <h3 className="text-lg md:text-xl font-semibold mb-2 text-foreground group-hover:text-primary transition-colors">
-                Blog & Articles
-              </h3>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Insights on AML/CFT, blockchain compliance, and financial crime prevention
-              </p>
-              <ArrowRight className="w-5 h-5 mt-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-2 transition-all" />
-            </Link>
-            
-            <Link 
-              to="/contact" 
-              className="glass-effect p-6 rounded-2xl hover:shadow-premium transition-all duration-300 group border border-border/50 hover:border-primary/30"
-            >
-              <h3 className="text-lg md:text-xl font-semibold mb-2 text-foreground group-hover:text-primary transition-colors">
-                Contact
-              </h3>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Get in touch for collaboration and consulting opportunities
-              </p>
-              <ArrowRight className="w-5 h-5 mt-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-2 transition-all" />
-            </Link>
-          </div>
+          {/* Quick Navigation Cards */}
+          <motion.div 
+            variants={containerVariants}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left"
+          >
+            {[
+              { to: "/resume", title: "Experience", desc: "My professional journey", icon: FileText },
+              { to: "/blog", title: "Insights", desc: "Thoughts on compliance", icon: Sparkles },
+              { to: "/contact", title: "Connect", desc: "Let's start a conversation", icon: Linkedin },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                variants={itemVariants}
+                whileHover={{ y: -5 }}
+                className="group relative overflow-hidden rounded-3xl bg-white/5 p-8 border border-white/10 hover:border-primary/20 transition-all duration-300"
+              >
+                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className="mb-4 inline-flex p-3 rounded-2xl bg-white/5 w-fit group-hover:bg-primary/10 transition-colors">
+                    <item.icon className="w-6 h-6 text-foreground group-hover:text-primary transition-colors" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-4 flex-grow">{item.desc}</p>
+                   <Link to={item.to} className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                    Explore <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
 
           {/* Location */}
-          <div className="text-center px-4">
-            <div className="inline-flex items-center text-muted-foreground text-sm md:text-base glass-effect px-4 py-2 rounded-full">
-              <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
+          <motion.div variants={itemVariants} className="mt-16 text-center">
+            <div className="inline-flex items-center text-muted-foreground text-sm font-medium px-6 py-2 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm">
+              <MapPin className="w-4 h-4 mr-2 text-primary" />
               <span>{personalInfo.location}</span>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
