@@ -60,8 +60,8 @@ const Layout = ({
                   key={item.path}
                   to={item.path}
                   className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === item.path
-                      ? 'text-primary font-semibold'
-                      : 'text-muted-foreground'
+                    ? 'text-primary font-semibold'
+                    : 'text-muted-foreground'
                     }`}
                 >
                   {item.label}
@@ -96,8 +96,8 @@ const Layout = ({
                     to={item.path}
                     onClick={() => setIsMenuOpen(false)}
                     className={`block w-full text-left py-3 text-lg transition-colors border-b border-border/20 last:border-0 ${location.pathname === item.path
-                        ? 'text-primary font-semibold'
-                        : 'text-muted-foreground hover:text-primary'
+                      ? 'text-primary font-semibold'
+                      : 'text-muted-foreground hover:text-primary'
                       }`}
                   >
                     {item.label}
@@ -120,23 +120,31 @@ const Layout = ({
       */}
       <main className="flex-1 pt-32 mobile:pt-24">{children}</main>
 
-      <footer className="border-t border-border py-8 md:py-12 mt-20 bg-muted/20">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Efstathios Georgopoulos. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6 text-sm">
-              <Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">
-                Privacy Policy
-              </Link>
-              <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">
-                Terms of Service
-              </Link>
-              <Link to="/cookies" className="text-muted-foreground hover:text-primary transition-colors">
-                Cookie Policy
-              </Link>
+      <footer className="footer-gradient text-muted-foreground py-12 mt-20 border-t border-border/40">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div className="col-span-1 md:col-span-1">
+              <h3 className="font-playfair text-foreground font-bold text-lg mb-4">E. Georgopoulos</h3>
+              <p className="text-sm leading-relaxed">
+                Financial Crime Compliance & Blockchain Expert based in Madrid, Spain.
+              </p>
             </div>
+
+            <div className="md:col-start-3 md:col-span-2">
+              <h3 className="font-playfair text-foreground font-bold text-lg mb-4">Legal & Compliance</h3>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <Link to="/legal/notice" className="hover:text-primary transition-colors">Legal Notice</Link>
+                <Link to="/legal/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+                <Link to="/legal/cookies" className="hover:text-primary transition-colors">Cookies Policy</Link>
+                <Link to="/legal/terms" className="hover:text-primary transition-colors">Terms of Use</Link>
+                <Link to="/legal/accessibility" className="hover:text-primary transition-colors">Accessibility</Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-border/20 text-xs">
+            <p>&copy; {new Date().getFullYear()} Efstathios Georgopoulos. All rights reserved.</p>
+            <p className="mt-2 md:mt-0">Designed with precision in Madrid.</p>
           </div>
         </div>
       </footer>

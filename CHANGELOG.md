@@ -2,13 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.2.0] - 2026-02-08
+## [0.2.1] - 2026-02-08
 
 ### Added
-- **Premium "Wow" UI**: Complete visual overhaul with "Glassmorphism" design system across **All Pages**.
-- **Floating Header**: Dynamic header that blurs on scroll.
-- **Animated Hero**: Staggered text entrance and floating background elements on Home page.
-- **Inner Pages Upgrade**: Applied "Wow" UI, animations, and glass cards to **About**, **Resume**, and **Skills** pages.
+- **Legal & Compliance Module**: Full suite of legal pages (`Terms`, `Privacy`, `Cookies`, `Accessibility`, `Legal Notice`) and Cookie Consent banner.
+- **Privacy**: Hidden direct email addresses and replaced with contact form links.
+- **Disclaimers**: Added professional financial/legal disclaimers to `LegalNotice`.
+
+## [0.2.0] - 2026-02-08
 - **Global Loader**: Premium "Pulsing Logo" splash screen for better perceived performance.
 - **Custom 404 Page**: "Block Not Found" blockchain-themed error page.
 - **Lazy Loading**: Route-based code splitting in `App.tsx` for faster initial load.

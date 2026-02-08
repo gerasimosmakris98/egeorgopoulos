@@ -22,11 +22,15 @@ const Skills = lazy(() => import("./pages/Skills"));
 const Services = lazy(() => import("./pages/Services"));
 const BlogListing = lazy(() => import("./pages/BlogListing"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
-const Privacy = lazy(() => import("./pages/Privacy"));
-const Terms = lazy(() => import("./pages/Terms"));
-const Cookies = lazy(() => import("./pages/Cookies"));
 const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Legal Pages (Lazy Loaded)
+const Privacy = lazy(() => import("./pages/legal/Privacy"));
+const Terms = lazy(() => import("./pages/legal/Terms"));
+const Cookies = lazy(() => import("./pages/legal/Cookies"));
+const LegalNotice = lazy(() => import("./pages/legal/LegalNotice"));
+const Accessibility = lazy(() => import("./pages/legal/Accessibility"));
 
 const queryClient = new QueryClient();
 
@@ -64,9 +68,19 @@ const App = () => (
                       <Route path="/services" element={<Services />} />
                       <Route path="/blog" element={<BlogListing />} />
                       <Route path="/contact" element={<ContactPage />} />
+
+                      {/* Legal & Compliance Routes */}
+                      <Route path="/legal/terms" element={<Terms />} />
+                      <Route path="/legal/privacy" element={<Privacy />} />
+                      <Route path="/legal/cookies" element={<Cookies />} />
+                      <Route path="/legal/notice" element={<LegalNotice />} />
+                      <Route path="/legal/accessibility" element={<Accessibility />} />
+
+                      {/* Redirect legacy paths if necessary, or keep simplified */}
                       <Route path="/privacy" element={<Privacy />} />
                       <Route path="/terms" element={<Terms />} />
                       <Route path="/cookies" element={<Cookies />} />
+
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
