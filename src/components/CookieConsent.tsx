@@ -20,7 +20,7 @@ const CookieConsent = () => {
     }
   }, []);
 
-  const handleConsent = async (accepted: boolean) => {
+  const handleConsent = (accepted: boolean) => {
     const consentType = accepted ? 'accepted' : 'rejected';
     localStorage.setItem('cookie_consent', consentType);
 
@@ -28,26 +28,23 @@ const CookieConsent = () => {
     const visitorId = localStorage.getItem('visitor_id') || crypto.randomUUID();
     localStorage.setItem('visitor_id', visitorId);
 
-    // Record consent in database (ignore errors as this is non-critical)
-    try {
-      await supabase.from('cookie_consents').insert({
-        visitor_id: visitorId,
-        consent_given: accepted,
-        consent_type: consentType
-      } as any);
-    } catch (error) {
-      // Silently fail - this is non-critical
-    }
-
+    // Update UI immediately (Optimistic)
     setIsAnimating(false);
     setTimeout(() => setIsVisible(false), 300);
+
+    // Record consent in database (background)
+    supabase.from('cookie_consents').insert({
+      visitor_id: visitorId,
+      consent_given: accepted,
+      consent_type: consentType
+    } as any);
   };
 
   if (!isVisible) return null;
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-[60] p-4 transition-all duration-300 ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+      className={`fixed bottom-0 left-0 right-0 z-[9999] p-4 transition-all duration-300 ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
         }`}
     >
       <div className="container mx-auto max-w-4xl">
