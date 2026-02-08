@@ -60,8 +60,8 @@ npm run build
 
 ## ☁️ Deployment
 
-This project is configured for deployment on **hosting platforms** like Firebase or Vercel.
+This project is configured for deployment via the **Lovable Project Preview**.
 
-```bash
-firebase deploy
-```
+1.  Go to the [Lovable Project Dashboard](https://lovable.dev/projects/69aa95af-981a-492f-88a2-7f43534b181c).
+2.  Open the **Preview**.
+3.  Click **Publish**.
