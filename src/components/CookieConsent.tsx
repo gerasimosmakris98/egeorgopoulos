@@ -44,7 +44,8 @@ const CookieConsent = () => {
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-[9999] p-4 transition-all duration-300 ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+      style={{ zIndex: 99999 }}
+      className={`fixed bottom-0 left-0 right-0 p-4 transition-all duration-300 pointer-events-auto ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
         }`}
     >
       <div className="container mx-auto max-w-4xl">
