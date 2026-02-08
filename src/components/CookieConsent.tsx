@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Cookie, X } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 
 const CookieConsent = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,12 +31,7 @@ const CookieConsent = () => {
     setIsAnimating(false);
     setTimeout(() => setIsVisible(false), 300);
 
-    // Record consent in database (background)
-    supabase.from('cookie_consents').insert({
-      visitor_id: visitorId,
-      consent_given: accepted,
-      consent_type: consentType
-    } as any);
+    // Backend disconnected - No database insert
   };
 
   if (!isVisible) return null;
@@ -47,6 +41,8 @@ const CookieConsent = () => {
       style={{ zIndex: 99999 }}
       className={`fixed bottom-0 left-0 right-0 p-4 transition-all duration-300 pointer-events-auto ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
         }`}
+      role="region"
+      aria-label="Cookie Consent Banner"
     >
       <div className="container mx-auto max-w-4xl">
         <div className="glass-effect rounded-xl p-4 md:p-6 border border-border/50 shadow-2xl">
@@ -56,31 +52,37 @@ const CookieConsent = () => {
                 <Cookie className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm md:text-base text-foreground">
-                  This site uses cookies to enhance your experience and provide analytics.
+                <p className="text-sm md:text-base text-foreground font-medium">
+                  We value your privacy
                 </p>
-                <Link
-                  to="/cookies"
-                  className="text-sm text-primary hover:underline mt-1 inline-block"
-                >
-                  Learn more →
-                </Link>
+                <p className="text-sm text-muted-foreground mt-1">
+                  We use cookies to enhance your experience and analyze our traffic.
+                  <Link
+                    to="/legal/cookies"
+                    className="text-primary hover:underline ml-1"
+                    aria-label="Read Cookie Policy"
+                  >
+                    Read Policy
+                  </Link>
+                </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 w-full md:w-auto">
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto mt-4 md:mt-0">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => handleConsent(false)}
-                className="flex-1 md:flex-none"
+                className="w-full sm:w-auto whitespace-nowrap"
+                aria-label="Reject non-essential cookies"
               >
-                Reject
+                Reject Non-Essential
               </Button>
               <Button
                 size="sm"
                 onClick={() => handleConsent(true)}
-                className="flex-1 md:flex-none"
+                className="w-full sm:w-auto whitespace-nowrap"
+                aria-label="Accept all cookies"
               >
                 Accept All
               </Button>
@@ -88,7 +90,8 @@ const CookieConsent = () => {
                 variant="ghost"
                 size="icon"
                 onClick={() => handleConsent(false)}
-                className="md:hidden"
+                className="md:hidden absolute top-2 right-2"
+                aria-label="Close cookie banner"
               >
                 <X className="w-4 h-4" />
               </Button>

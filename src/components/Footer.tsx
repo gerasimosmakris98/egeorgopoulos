@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Linkedin, MapPin, Heart } from "lucide-react";
+import { SubscriptionActions } from "./SubscriptionActions";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -20,7 +21,7 @@ const Footer = () => {
                 Efstathios Georgopoulos
               </h3>
               <p className="text-primary-foreground/80 mb-6 leading-relaxed text-lg">
-                Financial Compliance Expert & Blockchain Specialist dedicated to enhancing 
+                Financial Compliance Expert & Blockchain Specialist dedicated to enhancing
                 global financial security through innovative AML/CFT solutions and blockchain technology.
               </p>
               <div className="flex items-center gap-2 mb-6">
@@ -67,11 +68,15 @@ const Footer = () => {
                   </div>
                 </div>
               </div>
-              
-              <div className="mt-8">
-                <Button variant="hero" size="sm" onClick={() => scrollToSection('contact')} className="bg-accent text-accent-foreground hover:bg-accent/90">
+
+              <div className="mt-8 space-y-4">
+                <Button variant="hero" size="sm" onClick={() => scrollToSection('contact')} className="bg-accent text-accent-foreground hover:bg-accent/90 w-full justify-center">
                   Get In Touch
                 </Button>
+                <div className="pt-4 border-t border-white/10">
+                  <p className="text-sm text-primary-foreground/60 mb-3">Newsletter</p>
+                  <SubscriptionActions variant="outline" className="w-full" />
+                </div>
               </div>
             </div>
           </div>
@@ -84,7 +89,7 @@ const Footer = () => {
               <span>•</span>
               <span>Financial Compliance Expert</span>
             </div>
-            
+
             <div className="flex items-center gap-2 text-primary-foreground/80 text-sm">
               <span>Made with</span>
               <Heart className="w-4 h-4 text-accent" />

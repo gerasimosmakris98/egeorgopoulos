@@ -38,7 +38,7 @@ const NotFound = () => {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, type: "spring" }}
-          className="w-24 h-24 bg-secondary/50 rounded-3xl mx-auto mb-8 flex items-center justify-center glass-effect border-border/50"
+          className="w-24 h-24 bg-secondary/50 rounded-3xl mx-auto mb-8 flex items-center justify-center glass-panel border-white/5 hover:border-primary/20 transition-colors"
         >
           <FileQuestion className="w-10 h-10 text-primary" />
         </motion.div>

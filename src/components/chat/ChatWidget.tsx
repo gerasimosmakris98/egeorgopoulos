@@ -11,11 +11,11 @@ interface Message {
   content: string;
 }
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+import { GeminiService, ChatMessage } from '@/services/gemini';
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
     { role: 'assistant', content: "Hi there! I'm Efstathios's AI assistant. Ask me anything about Compliance, Blockchain, or my services! ⚡" }
   ]);
   const [input, setInput] = useState('');
@@ -37,88 +37,42 @@ const ChatWidget = () => {
     }
   }, [isOpen]);
 
-  const streamChat = async (userMessages: Message[]) => {
-    // ... (Keep existing stream logic, omitted for brevity but would be included in full file)
-    const resp = await fetch(CHAT_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-      },
-      body: JSON.stringify({ messages: userMessages }),
-    });
-
-    if (resp.status === 429) {
-      throw new Error('Rate limit exceeded. Please try again later.');
-    }
-    if (resp.status === 402) {
-      throw new Error('Service temporarily unavailable.');
-    }
-    if (!resp.ok || !resp.body) {
-      throw new Error('Failed to start stream');
-    }
-
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let textBuffer = '';
-    let assistantContent = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      textBuffer += decoder.decode(value, { stream: true });
-
-      let newlineIndex: number;
-      while ((newlineIndex = textBuffer.indexOf('\n')) !== -1) {
-        let line = textBuffer.slice(0, newlineIndex);
-        textBuffer = textBuffer.slice(newlineIndex + 1);
-
-        if (line.endsWith('\r')) line = line.slice(0, -1);
-        if (line.startsWith(':') || line.trim() === '') continue;
-        if (!line.startsWith('data: ')) continue;
-
-        const jsonStr = line.slice(6).trim();
-        if (jsonStr === '[DONE]') break;
-
-        try {
-          const parsed = JSON.parse(jsonStr);
-          const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-          if (content) {
-            assistantContent += content;
-            setMessages(prev => {
-              const last = prev[prev.length - 1];
-              if (last?.role === 'assistant' && prev.length > 1) {
-                return prev.map((m, i) =>
-                  i === prev.length - 1 ? { ...m, content: assistantContent } : m
-                );
-              }
-              return [...prev, { role: 'assistant', content: assistantContent }];
-            });
-          }
-        } catch {
-          textBuffer = line + '\n' + textBuffer;
-          break;
-        }
-      }
-    }
-  };
-
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = { role: 'user', content: input.trim() };
+    const userMessage = { role: 'user' as const, content: input.trim() };
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInput('');
     setIsLoading(true);
 
     try {
-      await streamChat(newMessages);
-    } catch (error) {
+      // Convert messages to Gemini format
+      const history: ChatMessage[] = messages.slice(1).map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }]
+      }));
+
+      const stream = await GeminiService.streamChat(history, input.trim());
+
+      let assistantContent = "";
+      setMessages(prev => [...prev, { role: 'assistant', content: "" }]);
+
+      for await (const chunk of stream) {
+        const chunkText = chunk.text();
+        assistantContent += chunkText;
+
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = { role: 'assistant', content: assistantContent };
+          return updated;
+        });
+      }
+    } catch (error: any) {
       console.error('Chat error:', error);
       setMessages(prev => [
         ...prev,
-        { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }
+        { role: 'assistant', content: error.message || 'Sorry, I encountered an error. Please try again later.' }
       ]);
     } finally {
       setIsLoading(false);
@@ -148,55 +102,48 @@ const ChatWidget = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20, transformOrigin: "bottom right" }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", duration: 0.4 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
             className={cn(
-              "fixed z-40 flex flex-col overflow-hidden shadow-2xl glass-card-elevated border border-white/10",
-              // Mobile Styles: Fullscreen (minus header/cookies)
-              "inset-0 top-[60px] bottom-0 rounded-none w-full h-auto",
-              // Desktop Styles: Fixed widget
-              "sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[380px] sm:h-[500px] sm:max-h-[70vh] sm:rounded-3xl"
+              "fixed z-50 flex flex-col overflow-hidden shadow-2xl border border-white/10 bg-black/80 backdrop-blur-xl",
+              // Mobile: Full screen minus nav
+              "inset-0 top-[0px] w-full h-full rounded-none",
+              // Desktop: Compact floating window
+              "sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[400px] sm:h-[600px] sm:max-h-[80vh] sm:rounded-[2rem]"
             )}
           >
-            {/* Premium Header */}
-            <div className="bg-white/5 backdrop-blur-md p-4 border-b border-white/5 flex justify-between items-center relative shrink-0">
-              {/* Animated Gradient Border Bottom */}
-              <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/5 backdrop-blur-sm sticky top-0 z-10">
               <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg">
-                    <Sparkles className="w-5 h-5 text-white fill-white" />
-                  </div>
-                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-background rounded-full"></span>
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg ring-1 ring-white/20">
+                  <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-playfair font-bold text-lg text-foreground leading-tight">
+                  <h3 className="font-playfair font-bold text-lg text-white leading-none mb-1">
                     AI Assistant
                   </h3>
-                  <p className="text-xs text-muted-foreground font-medium">Powering your compliance</p>
+                  <p className="text-xs text-zinc-400 font-medium tracking-wide uppercase">Compliance Expert</p>
                 </div>
               </div>
-
-              <div className="flex items-center gap-1">
+              <div className="flex gap-2">
                 <Button
                   size="icon"
                   variant="ghost"
-                  aria-label="Minimize Chat"
-                  className="h-8 w-8 rounded-full hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
                   onClick={handleMinimize}
+                  className="rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors w-8 h-8"
                 >
-                  <span className="text-xl font-bold mb-3">_</span>
+                  <span className="sr-only">Minimize</span>
+                  <div className="w-3 h-0.5 bg-current rounded-full" />
                 </Button>
                 <Button
                   size="icon"
                   variant="ghost"
-                  aria-label="Close and Reset Chat"
-                  className="h-8 w-8 rounded-full hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors"
                   onClick={handleClose}
+                  className="rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors w-8 h-8"
                 >
+                  <span className="sr-only">Close</span>
                   <X className="w-5 h-5" />
                 </Button>
               </div>
@@ -210,21 +157,23 @@ const ChatWidget = () => {
                   animate={{ opacity: 1, y: 0 }}
                   key={index}
                   className={cn(
-                    "flex gap-3 max-w-[85%]",
-                    message.role === 'user' ? "ml-auto flex-row-reverse" : ""
+                    "flex flex-col gap-1 max-w-[85%]",
+                    message.role === 'user' ? "ml-auto items-end" : "mr-auto items-start"
                   )}
                 >
-                  {/* Messages */}
+                  <span className="text-[10px] text-zinc-500 font-medium px-1">
+                    {message.role === 'user' ? 'You' : 'Atlas AI'}
+                  </span>
                   <div
                     className={cn(
-                      "p-3.5 rounded-2xl text-sm leading-relaxed shadow-sm relative group",
+                      "p-4 rounded-2xl text-sm leading-relaxed shadow-sm relative",
                       message.role === 'user'
-                        ? "bg-primary text-primary-foreground rounded-tr-none"
-                        : "bg-white/5 border border-white/10 text-foreground rounded-tl-none backdrop-blur-sm"
+                        ? "bg-primary text-primary-foreground rounded-tr-sm"
+                        : "bg-zinc-800/80 border border-white/5 text-zinc-100 rounded-tl-sm backdrop-blur-sm"
                     )}
                   >
                     {message.role === 'assistant' ? (
-                      <div className="prose prose-sm prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/10">
+                      <div className="prose prose-sm prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/10 prose-a:text-accent prose-a:no-underline hover:prose-a:underline">
                         <ReactMarkdown>{message.content}</ReactMarkdown>
                       </div>
                     ) : (
@@ -234,14 +183,15 @@ const ChatWidget = () => {
                 </motion.div>
               ))}
 
-              {isLoading && messages[messages.length - 1]?.role === 'user' && (
+              {isLoading && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3">
-                  <div className="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none px-4 py-3 backdrop-blur-sm">
-                    <div className="flex gap-1.5 items-center h-full">
-                      <span className="w-1.5 h-1.5 bg-primary/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <span className="w-1.5 h-1.5 bg-primary/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <span className="w-1.5 h-1.5 bg-primary/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                    </div>
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary/20 to-accent/20 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-4 h-4 text-primary/60" />
+                  </div>
+                  <div className="bg-zinc-800/50 border border-white/5 rounded-2xl rounded-tl-none px-4 py-3 backdrop-blur-sm flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-primary/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1.5 h-1.5 bg-primary/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1.5 h-1.5 bg-primary/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </motion.div>
               )}
@@ -249,16 +199,16 @@ const ChatWidget = () => {
             </div>
 
             {/* Input Area */}
-            <div className="p-4 bg-background/40 backdrop-blur-md border-t border-white/5 shrink-0">
-              <div className="relative flex items-center gap-2">
+            <div className="p-4 bg-black/20 backdrop-blur-md border-t border-white/5 shrink-0">
+              <div className="relative flex items-center gap-2 bg-zinc-900/50 rounded-3xl border border-white/10 px-1 py-1 focus-within:ring-1 focus-within:ring-primary/50 transition-all">
                 <input
                   ref={inputRef}
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask about crypto compliance..."
-                  className="flex-1 bg-white/5 border border-white/10 rounded-full pl-5 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all shadow-inner"
+                  placeholder="Ask a compliance question..."
+                  className="flex-1 bg-transparent border-none pl-4 pr-2 py-3 text-sm text-foreground placeholder:text-zinc-500 focus:outline-none focus:ring-0"
                   disabled={isLoading}
                 />
                 <Button
@@ -266,51 +216,39 @@ const ChatWidget = () => {
                   disabled={!input.trim() || isLoading}
                   size="icon"
                   className={cn(
-                    "h-11 w-11 rounded-full text-white shadow-lg transition-all duration-300",
+                    "h-10 w-10 rounded-full transition-all duration-300 shadow-md",
                     input.trim()
-                      ? "bg-gradient-to-r from-primary to-accent hover:shadow-primary/25 hover:scale-105"
-                      : "bg-white/5 text-muted-foreground"
+                      ? "bg-primary text-white hover:bg-primary/90 hover:scale-105"
+                      : "bg-zinc-800 text-zinc-600"
                   )}
                 >
-                  <Send className={cn("w-5 h-5", input.trim() && "ml-0.5")} />
+                  <Send className={cn("w-4 h-4", input.trim() && "ml-0.5")} />
                 </Button>
+              </div>
+              <div className="text-center mt-2">
+                <p className="text-[10px] text-zinc-600">AI can make mistakes. Verify important info.</p>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Floating Action Button (Pulse) */}
+      {/* Trigger Button - Floating Pill style */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          "fixed bottom-6 right-6 z-40 group",
-          isOpen && "hidden sm:block"
+          "fixed bottom-6 right-6 z-50 group",
+          isOpen ? "hidden" : "flex"
         )}
       >
-        <div className={cn(
-          "w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 relative",
-          isOpen
-            ? "bg-destructive text-white rotate-90"
-            : "bg-foreground text-background"
-        )}>
-          {!isOpen && (
-            <>
-              <span className="absolute inset-0 rounded-full bg-white/20 animate-ping duration-1000" />
-              <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500"></span>
-              </span>
-            </>
-          )}
-
-          {isOpen ? (
-            <X className="w-6 h-6" />
-          ) : (
-            <MessageSquare className="w-6 h-6 fill-current" />
-          )}
+        <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-zinc-900 to-black border border-white/10 shadow-2xl hover:shadow-primary/20 transition-all">
+          <div className="relative">
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse absolute -top-1 -right-1 border-2 border-black" />
+            <MessageSquare className="w-5 h-5 text-white" />
+          </div>
+          <span className="text-white font-medium text-sm pr-1">Ask AI Assistant</span>
         </div>
       </motion.button>
     </>

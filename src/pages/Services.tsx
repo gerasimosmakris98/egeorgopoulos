@@ -1,157 +1,115 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
-import { 
-  Shield, TrendingUp, Search, FileCheck, 
-  Briefcase, CheckCircle, ArrowRight, Linkedin
+import {
+  Shield, TrendingUp, Search, FileCheck,
+  CheckCircle, ArrowRight, Linkedin
 } from 'lucide-react';
 
-interface Service {
-  id: string;
-  title: string;
-  description: string | null;
-  icon: string | null;
-  features: string[];
-  order_index: number;
-  visible: boolean;
-}
-
-const iconMap: { [key: string]: React.ElementType } = {
-  Shield,
-  TrendingUp,
-  Search,
-  FileCheck,
-  Briefcase,
-  CheckCircle
-};
-
 const Services: React.FC = () => {
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('services')
-          .select('*')
-          .eq('visible', true)
-          .order('order_index');
-
-        if (error) throw error;
-        setServices(data || []);
-      } catch (error) {
-        console.error('Error fetching services:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchServices();
-  }, []);
-
-  const getIcon = (iconName: string | null) => {
-    if (!iconName) return Briefcase;
-    return iconMap[iconName] || Briefcase;
-  };
-
-  const defaultServices = [
+  // Static services data
+  const services = [
     {
-      id: 'default-1',
-      title: 'AML/CFT Compliance',
-      description: 'Expert analysis and implementation of Anti-Money Laundering and Counter-Financing of Terrorism programs tailored to your organization.',
-      icon: 'Shield',
+      id: '1',
+      title: 'AML/CFT Compliance Consulting',
+      description: 'Comprehensive Anti-Money Laundering and Counter-Terrorism Financing compliance services. Includes policy development, gap analysis, regulatory reporting (SAR/STR), remediation programs, and alignment with SEPBLAC, FinCEN, CSSF, BaFin, and BoG.',
+      icon: Shield,
       features: [
-        'Risk Assessment & Gap Analysis',
-        'Policy Development',
-        'Transaction Monitoring',
-        'SAR/STR Filing'
-      ],
-      order_index: 0,
-      visible: true
+        'AML/CFT Policy Development',
+        'Compliance Gap Analysis',
+        'SAR/STR Preparation',
+        'Regulatory Alignment (EU/US/LATAM)'
+      ]
     },
     {
-      id: 'default-2',
-      title: 'KYC/CDD Implementation',
-      description: 'Comprehensive Know Your Customer and Customer Due Diligence frameworks that balance regulatory requirements with customer experience.',
-      icon: 'Search',
+      id: '2',
+      title: 'KYC/CDD & Transaction Monitoring',
+      description: 'End-to-end Know Your Customer implementation, Enhanced Due Diligence for PEPs/high-risk clients, sanctions screening optimization, and transaction monitoring tuning to reduce false positives.',
+      icon: Search,
       features: [
-        'Identity Verification',
-        'Enhanced Due Diligence',
-        'Ongoing Monitoring',
-        'Risk Scoring'
-      ],
-      order_index: 1,
-      visible: true
+        'KYC/CDD Framework Design',
+        'Enhanced Due Diligence (EDD)',
+        'Transaction Monitoring Tuning',
+        'False Positive Reduction'
+      ]
     },
     {
-      id: 'default-3',
-      title: 'Blockchain & Crypto Compliance',
-      description: 'Specialized compliance solutions for cryptocurrency businesses, DeFi protocols, and blockchain-based financial services.',
-      icon: 'TrendingUp',
+      id: '3',
+      title: 'Blockchain & Crypto Asset Compliance',
+      description: 'Specialized compliance for crypto-assets, including Bank of Spain registration, Travel Rule (MiCA) compliance, VASP frameworks, and on-chain forensic analysis using Chainalysis.',
+      icon: TrendingUp,
       features: [
-        'VASP Compliance',
-        'Travel Rule Implementation',
-        'Chainalysis Integration',
-        'Regulatory Mapping'
-      ],
-      order_index: 2,
-      visible: true
+        'Crypto-Asset Registration (Spain)',
+        'Travel Rule (MiCA) Compliance',
+        'On-Chain Forensics (Chainalysis)',
+        'VASP Framework Design'
+      ]
     },
     {
-      id: 'default-4',
-      title: 'Quality Assurance & Audit',
-      description: 'Independent quality control and compliance auditing to ensure your operations meet regulatory standards.',
-      icon: 'FileCheck',
+      id: '4',
+      title: 'Compliance Training & Development',
+      description: 'Tailored training programs covering AML/CFT fundamentals, blockchain compliance, and KYC/CDD best practices. Delivered via workshops, webinars, or e-learning modules.',
+      icon: FileCheck,
       features: [
-        'Process Quality Reviews',
-        'Compliance Testing',
-        'Gap Identification',
-        'Remediation Planning'
-      ],
-      order_index: 3,
-      visible: true
+        'Custom Curriculum Design',
+        'Live Workshops & Webinars',
+        'Staff Assessment & Certification',
+        'Regulatory Update Briefings'
+      ]
+    },
+    {
+      id: '5',
+      title: 'Fraud Investigation & Forensic Analysis',
+      description: 'Deep-dive fraud probes, suspicious transaction investigations, and forensic financial analysis backed by banking investigation experience.',
+      icon: Search,
+      features: [
+        'Fraud Pattern Analysis',
+        'Forensic Financial Investigation',
+        'Evidence Gathering',
+        'Internal Fraud Risk Assessment'
+      ]
+    },
+    {
+      id: '6',
+      title: 'Compliance Quality Assurance & Auditing',
+      description: 'Independent Level 3 QA reviews across the client lifecycle (onboarding, screening, TM). Includes thematic reviews, deep dives, and remedial action tracking.',
+      icon: CheckCircle,
+      features: [
+        'Level 3 QA Reviews',
+        'Thematic Compliance Audits',
+        'Remedial Action Tracking',
+        'Calibration Forums'
+      ]
     }
   ];
-
-  const displayServices = services.length > 0 ? services : defaultServices;
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-16 flex items-center justify-center min-h-[60vh]">
-        <div className="animate-pulse text-muted-foreground">Loading services...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 md:py-16">
       {/* Hero Section */}
       <div className="text-center mb-12 md:mb-16 fade-in-up">
-        <Badge variant="outline" className="mb-4 md:mb-6 text-sm px-4 py-2">
+        <Badge variant="outline" className="mb-4 md:mb-6 text-sm px-4 py-2 border-primary/20 text-primary bg-primary/5">
           Services
         </Badge>
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-playfair font-bold mb-6 text-primary">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-playfair font-bold mb-6 text-primary tracking-tight">
           Professional Services
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-          Specialized consulting services in financial crime compliance, regulatory frameworks, 
+          Specialized consulting services in financial crime compliance, regulatory frameworks,
           and blockchain technology for organizations seeking to enhance their compliance posture.
         </p>
       </div>
 
       {/* Services Grid */}
-      <section className="mb-16">
+      <section className="mb-16 md:mb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 stagger-children">
-          {displayServices.map((service, index) => {
-            const Icon = getIcon(service.icon);
+          {services.map((service, index) => {
+            const Icon = service.icon;
             return (
-              <Card 
-                key={service.id} 
-                className="glass-effect hover:shadow-premium transition-spring hover:scale-[1.02] group"
+              <Card
+                key={service.id}
+                className="glass-panel border-white/5 hover:border-primary/20 hover:shadow-premium transition-all duration-500 hover:scale-[1.01] group"
                 style={{ '--i': index } as any}
               >
                 <CardHeader>
@@ -160,7 +118,7 @@ const Services: React.FC = () => {
                       <Icon className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl font-playfair mb-2">
+                      <CardTitle className="text-xl md:text-2xl font-playfair font-bold mb-2">
                         {service.title}
                       </CardTitle>
                       <p className="text-muted-foreground text-sm leading-relaxed">
@@ -170,9 +128,9 @@ const Services: React.FC = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-2">
+                  <ul className="space-y-3">
                     {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-sm">
+                      <li key={idx} className="flex items-center gap-3 text-sm text-white/80">
                         <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
                         <span>{feature}</span>
                       </li>
@@ -207,9 +165,9 @@ const Services: React.FC = () => {
             'Investment Firms',
             'Neo-Banks'
           ].map((area, index) => (
-            <Badge 
-              key={area} 
-              variant="secondary" 
+            <Badge
+              key={area}
+              variant="secondary"
               className="px-4 py-2 text-sm glass-effect hover:shadow-card transition-spring cursor-default"
               style={{ '--i': index } as any}
             >
@@ -226,7 +184,7 @@ const Services: React.FC = () => {
             Ready to Strengthen Your Compliance?
           </h2>
           <p className="text-muted-foreground mb-8">
-            Whether you need a full compliance program review, specific regulatory guidance, 
+            Whether you need a full compliance program review, specific regulatory guidance,
             or blockchain compliance expertise, I'm here to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -1,10 +1,9 @@
+/* Import Inter and Playfair Display fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import Inter and Playfair Display fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap');
 
 /* Dark Professional Design System */
 
@@ -23,10 +22,10 @@
     /* Professional dark palette */
     --primary: 0 0% 95%;
     --primary-foreground: 0 0% 8%;
-    
+
     --accent: 0 0% 20%;
     --accent-foreground: 0 0% 95%;
-    
+
     --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 95%;
 
@@ -69,7 +68,7 @@
 
     --primary: 0 0% 95%;
     --primary-foreground: 0 0% 8%;
-    
+
     --accent: 0 0% 20%;
     --accent-foreground: 0 0% 95%;
 
@@ -107,17 +106,23 @@
     font-family: 'Inter', sans-serif;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: 'Playfair Display', serif;
   }
 }
 
 @layer utilities {
+
   /* Font utilities */
   .font-inter {
     font-family: 'Inter', sans-serif;
   }
-  
+
   .font-playfair {
     font-family: 'Playfair Display', serif;
   }
@@ -128,7 +133,7 @@
   }
 
   .glass-effect {
-    @apply bg-background/80 backdrop-blur-md border border-border/50;
+    @apply bg-background/60 backdrop-blur-xl border border-white/10;
   }
 
   .glass-card-elevated {
@@ -139,7 +144,7 @@
   .glass-panel {
     @apply bg-background/40 backdrop-blur-2xl border border-border/20;
   }
-  
+
   /* Animation utilities */
   .fade-in-up {
     animation: fadeInUp 0.8s ease-out forwards;
@@ -148,8 +153,8 @@
   .fade-in-scale {
     animation: fadeInScale 0.6s ease-out forwards;
   }
-  
-  .stagger-children > * {
+
+  .stagger-children>* {
     animation-delay: calc(var(--i, 0) * 0.1s);
   }
 
@@ -235,7 +240,7 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    
+
     .line-clamp-3 {
       display: -webkit-box;
       -webkit-line-clamp: 3;
@@ -251,6 +256,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -262,6 +268,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -269,27 +276,36 @@
 }
 
 @keyframes floating {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
+
   50% {
     transform: translateY(-20px) rotate(10deg);
   }
 }
 
 @keyframes shimmer {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
 }
 
 @keyframes pulseGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
   }
+
   50% {
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
   }
@@ -299,6 +315,7 @@
   from {
     transform: translateX(-100%);
   }
+
   to {
     transform: translateX(0);
   }
@@ -309,6 +326,7 @@
     opacity: 0;
     transform: translateX(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -320,13 +338,14 @@
   .container {
     @apply px-3;
   }
-  
+
   /* Improve button touch targets on mobile */
-  button, .btn {
+  button,
+  .btn {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* Better spacing for mobile cards */
   .glass-effect {
     @apply mx-1;
@@ -362,6 +381,7 @@
 }
 
 @media (max-width: 480px) {
+
   /* Extra small screens */
   .container {
     @apply px-2;
@@ -395,7 +415,7 @@
   .hover\:scale-105:hover {
     transform: none;
   }
-  
+
   .hover\:shadow-premium:hover {
     box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }

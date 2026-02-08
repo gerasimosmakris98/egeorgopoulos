@@ -1,8 +1,9 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Accessibility as AccessibilityIcon } from 'lucide-react';
+import { ArrowLeft, Accessibility as AccessIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SubscriptionActions } from "@/components/SubscriptionActions";
 
 const Accessibility = () => {
     return (
@@ -15,47 +16,103 @@ const Accessibility = () => {
 
             <div className="flex items-center gap-4 mb-8">
                 <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20">
-                    <AccessibilityIcon className="w-8 h-8 text-primary" />
+                    <AccessIcon className="w-8 h-8 text-primary" />
                 </div>
-                <h1 className="text-3xl md:text-4xl font-playfair font-bold text-foreground">
-                    Accessibility Statement
-                </h1>
+                <div>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-playfair font-bold text-foreground tracking-tight">
+                        Accessibility Statement
+                    </h1>
+                    <p className="text-muted-foreground mt-2">v1.1 | Effective: 8 February 2026</p>
+                </div>
             </div>
 
-            <Card className="glass-effect border-white/5">
+            <Card className="glass-panel border-white/5 hover:border-primary/20 transition-colors duration-300">
                 <CardContent className="p-8 space-y-8 text-muted-foreground leading-relaxed">
 
+                    <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                        <p className="text-sm">
+                            ♿ <strong>Standard:</strong> WCAG 2.1 Level AA | <strong>Last Review:</strong> 8 February 2026
+                        </p>
+                    </div>
+
                     <section>
-                        <h2 className="text-xl font-bold text-foreground mb-4">Commitment</h2>
+                        <h2 className="text-xl font-bold text-foreground mb-4">1. Commitment</h2>
                         <p>
-                            Efstathios Georgopoulos is committed to ensuring digital accessibility for people with disabilities.
-                            We are continually improving the user experience for everyone and applying the relevant accessibility standards.
+                            Efstathios Georgopoulos is committed to ensuring digital accessibility for people with disabilities. We continually improve the user experience for everyone and apply the relevant accessibility standards as outlined in the <strong>EU Web Accessibility Directive</strong> and <strong>WCAG 2.1</strong>.
                         </p>
                     </section>
 
                     <section>
-                        <h2 className="text-xl font-bold text-foreground mb-4">Conformance Status</h2>
+                        <h2 className="text-xl font-bold text-foreground mb-4">2. Conformance Status</h2>
                         <p>
-                            The Web Content Accessibility Guidelines (WCAG) defines requirements for designers and developers to improve accessibility
-                            for people with disabilities. It defines three levels of conformance: Level A, Level AA, and Level AAA.
-                        </p>
-                        <p className="mt-4">
-                            This website is partially conformant with <strong>WCAG 2.1 level AA</strong>. Partially conformant means that some parts of the content
-                            may not fully conform to the accessibility standard, though we strive for full compliance.
+                            This website is <strong>partially conformant</strong> with WCAG 2.1 Level AA. "Partially conformant" means that some parts of the content may not fully conform to the accessibility standard, though we strive for full compliance.
                         </p>
                     </section>
 
                     <section>
-                        <h2 className="text-xl font-bold text-foreground mb-4">Feedback</h2>
+                        <h2 className="text-xl font-bold text-foreground mb-4">3. Accessibility Features</h2>
+                        <ul className="list-disc pl-6 space-y-1">
+                            <li>Semantic HTML structure for screen reader compatibility</li>
+                            <li>Keyboard navigation support across all pages</li>
+                            <li>Skip navigation links for main content</li>
+                            <li>Alt text for images and media elements</li>
+                            <li>Sufficient color contrast (minimum 4.5:1 ratio)</li>
+                            <li>Responsive design for all screen sizes</li>
+                            <li>Focus indicators for interactive elements</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 className="text-xl font-bold text-foreground mb-4">4. Known Limitations</h2>
+                        <p className="mb-4">Despite our best efforts, some areas may have limited accessibility:</p>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr className="border-b border-white/10">
+                                        <th className="py-2 pr-4 font-semibold text-foreground">Area</th>
+                                        <th className="py-2 font-semibold text-foreground">Limitation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr className="border-b border-white/10">
+                                        <td className="py-2 pr-4">Dynamic content</td>
+                                        <td className="py-2">Some dynamic loading may not be fully announced by screen readers.</td>
+                                    </tr>
+                                    <tr className="border-b border-white/10">
+                                        <td className="py-2 pr-4">Embedded Forms</td>
+                                        <td className="py-2">Third-party Notion embeds may have limited keyboard navigation.</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-2 pr-4">PDFs</td>
+                                        <td className="py-2">Some linked PDFs may not be fully accessible.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h2 className="text-xl font-bold text-foreground mb-4">5. Feedback & Contact</h2>
                         <p>
-                            We welcome your feedback on the accessibility of this website. Please let us know if you encounter accessibility barriers:
+                            We welcome feedback on the accessibility of this website. Please let us know if you encounter accessibility barriers via the <Link to="/contact" className="text-primary hover:underline">Contact Form</Link> with subject "Accessibility Feedback".
                         </p>
-                        <p className="mt-2">
-                            <strong>Contact:</strong> Please use the <Link to="/contact" className="text-primary hover:underline">Contact Form</Link> on this website.
+                    </section>
+
+                    <section>
+                        <h2 className="text-xl font-bold text-foreground mb-4">6. Enforcement Procedure</h2>
+                        <p>
+                            If you are not satisfied with our response, you may contact the <strong>Ministerio de Asuntos Económicos y Transformación Digital</strong> (Spain) or your local equality body.
                         </p>
-                        <p className="mt-2">
-                            We try to respond to feedback within 2 business days.
-                        </p>
+                    </section>
+
+                    <section className="pt-8 border-t border-white/10">
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div>
+                                <h3 className="font-semibold mb-1">Stay Informed</h3>
+                                <p className="text-sm">Subscribe to receive updates on privacy and compliance.</p>
+                            </div>
+                            <SubscriptionActions />
+                        </div>
                     </section>
 
                 </CardContent>

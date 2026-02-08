@@ -90,12 +90,12 @@ For privacy-related inquiries, please use the [contact form](/contact) or connec
           <div className="p-3 rounded-full bg-primary/10 backdrop-blur">
             <Shield className="w-6 h-6 text-primary" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-playfair font-bold">
+          <h1 className="text-4xl md:text-5xl font-playfair font-bold tracking-tight">
             {legalContent?.title || 'Privacy Policy'}
           </h1>
         </div>
 
-        <Card className="glass-effect">
+        <Card className="glass-panel border-white/5 hover:border-primary/20 transition-colors duration-300">
           <CardContent className="p-6 md:p-8">
             {loading ? (
               <div className="animate-pulse space-y-4">
@@ -106,7 +106,7 @@ For privacy-related inquiries, please use the [contact form](/contact) or connec
             ) : (
               <>
                 <p className="text-muted-foreground mb-6">
-                  Last updated: {legalContent?.updated_at 
+                  Last updated: {legalContent?.updated_at
                     ? format(new Date(legalContent.updated_at), 'MMMM yyyy')
                     : 'February 2025'
                   }

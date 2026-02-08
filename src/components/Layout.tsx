@@ -1,22 +1,33 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
-const Layout = ({
-  children
-}: {
-  children: React.ReactNode;
-}) => {
+const Layout = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Scroll to top on route change
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+  // Scroll to top is handled by ScrollToTop component in App.tsx now, 
+  // but keeping this here implicitly if passing simple children was supported. 
+  // Since we use Outlet, this effect is fine but maybe redundant. 
+  // We'll leave it or remove it. Let's remove the redundant scroll to top here 
+  // to rely on the dedicated component.
 
   // Handle scroll effect
   useEffect(() => {
@@ -27,61 +38,101 @@ const Layout = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const menuItems = [
-    { label: "Home", path: "/" },
-    { label: "About", path: "/about" },
-    { label: "Resume", path: "/resume" },
-    { label: "Skills", path: "/skills" },
-    { label: "Services", path: "/services" },
-    { label: "Blog", path: "/blog" },
-    { label: "FAQ", path: "/faqs" },
-    { label: "Contact", path: "/contact" }
+  const navGroups = [
+    {
+      title: "Profile",
+      items: [
+        { label: "Home", path: "/", description: "Welcome to my digital workspace" },
+        { label: "About Me", path: "/about", description: "My journey & professional background" },
+        { label: "Resume", path: "/resume", description: "Experience, Education & Certifications" },
+        { label: "Skills", path: "/skills", description: "Core Competencies & Technology Stack" },
+      ]
+    },
+    {
+      title: "Work & Insights",
+      items: [
+        { label: "Services", path: "/services", description: "Compliance consulting & gap analysis" },
+        { label: "Blog", path: "/blog", description: "Insights on FinCrime & Crypto regulations" },
+      ]
+    },
+    {
+      title: "Resources",
+      items: [
+        { label: "Contact", path: "/contact", description: "Let's discuss collaboration opportunities" },
+        { label: "FAQ", path: "/faqs", description: "Common questions about my services" },
+        { label: "Sitemap", path: "/sitemap", description: "Overview of the website structure" },
+        { label: "Legal Notice", path: "/legal/notice", description: "Terms, Privacy & Legal information" },
+      ]
+    }
   ];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out py-4",
+          "fixed top-4 left-0 right-0 z-50 transition-all duration-500 ease-in-out mx-4 rounded-2xl border border-white/10",
           isScrolled
-            ? "bg-background/80 backdrop-blur-md shadow-sm border-b border-border/40 py-2"
-            : "bg-transparent border-b border-transparent shadow-none"
+            ? "bg-background/70 backdrop-blur-xl shadow-glass py-2 max-w-7xl mx-auto"
+            : "bg-background/30 backdrop-blur-lg shadow-sm py-3 max-w-7xl mx-auto"
         )}
       >
-        <div className="container mx-auto px-4 md:px-6">
+        <div className="px-4 md:px-6">
           <div className="flex items-center justify-between h-14 md:h-16">
-            <Link to="/" className="text-xl md:text-2xl font-playfair font-bold text-foreground">
+            <Link to="/" className="text-xl md:text-2xl font-playfair font-bold text-foreground z-50">
               E. Georgopoulos
             </Link>
 
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
-              {menuItems.map(item => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === item.path
-                    ? 'text-primary font-semibold'
-                    : 'text-muted-foreground'
-                    }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
+            <div className="hidden md:flex items-center justify-center flex-1 ml-8">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  {navGroups.map((group) => (
+                    <NavigationMenuItem key={group.title}>
+                      <NavigationMenuTrigger className="bg-transparent hover:bg-white/5 data-[state=open]:bg-white/5">
+                        {group.title}
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-background/70 backdrop-blur-xl border-white/10 shadow-glass rounded-xl border">
+                          {group.items.map((item) => (
+                            <li key={item.path}>
+                              <NavigationMenuLink asChild>
+                                <Link
+                                  to={item.path}
+                                  className={cn(
+                                    "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                                    location.pathname === item.path && "bg-accent/50 text-accent-foreground"
+                                  )}
+                                >
+                                  <div className="text-sm font-medium leading-none">{item.label}</div>
+                                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1.5 opacity-80">
+                                    {item.description}
+                                  </p>
+                                </Link>
+                              </NavigationMenuLink>
+                            </li>
+                          ))}
+                        </ul>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  ))}
+                </NavigationMenuList>
+              </NavigationMenu>
             </div>
 
-            <Button variant="outline" size="sm" asChild className="hidden md:inline-flex rounded-full px-6 border-white/10 hover:bg-white/5 hover:text-primary">
-              <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
-                LinkedIn
-              </a>
-            </Button>
+            <div className="hidden md:flex items-center gap-4">
+              <Button variant="outline" size="sm" asChild className="rounded-full px-6 border-white/10 hover:bg-white/5 hover:text-primary">
+                <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
+                  LinkedIn
+                </a>
+              </Button>
+            </div>
 
             {/* Mobile Menu Button */}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden h-9 w-9"
+              className="md:hidden h-9 w-9 z-50"
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
@@ -89,26 +140,43 @@ const Layout = ({
 
           {/* Mobile Menu */}
           {isMenuOpen && (
-            <div className="absolute top-full left-0 right-0 border-t border-border bg-background/95 backdrop-blur-xl animate-in slide-in-from-top-2">
-              <div className="px-4 py-4 space-y-2 container mx-auto">
-                {menuItems.map(item => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`block w-full text-left py-3 text-lg transition-colors border-b border-border/20 last:border-0 ${location.pathname === item.path
-                      ? 'text-primary font-semibold'
-                      : 'text-muted-foreground hover:text-primary'
-                      }`}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-                <Button variant="outline" size="lg" asChild className="w-full mt-6 rounded-full">
-                  <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
-                    LinkedIn
-                  </a>
-                </Button>
+            <div className="absolute top-0 left-0 right-0 min-h-screen bg-background/95 backdrop-blur-xl animate-in slide-in-from-top-2 pt-24 pb-8 flex flex-col">
+              <div className="px-6 container mx-auto flex-1 overflow-y-auto">
+                <Accordion type="single" collapsible className="w-full">
+                  {navGroups.map((group, index) => (
+                    <AccordionItem value={`item-${index}`} key={group.title} className="border-b border-white/10">
+                      <AccordionTrigger className="text-lg font-medium py-4 hover:text-primary hover:no-underline">
+                        {group.title}
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="flex flex-col gap-2 pb-4 pl-4">
+                          {group.items.map((item) => (
+                            <li key={item.path}>
+                              <Link
+                                to={item.path}
+                                onClick={() => setIsMenuOpen(false)}
+                                className={cn(
+                                  "block py-2 text-base text-muted-foreground transition-colors hover:text-primary",
+                                  location.pathname === item.path && "text-primary font-medium"
+                                )}
+                              >
+                                {item.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+
+                <div className="mt-8 pt-8 border-t border-white/10">
+                  <Button variant="outline" size="lg" asChild className="w-full rounded-full border-white/10">
+                    <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
+                      LinkedIn
+                    </a>
+                  </Button>
+                </div>
               </div>
             </div>
           )}
@@ -119,7 +187,7 @@ const Layout = ({
         Added 'pt-24' to push content down because header is fixed. 
         The exact spacing can be adjusted here. 
       */}
-      <main className="flex-1 pt-32 mobile:pt-24">{children}</main>
+      <main className="flex-1 pt-20 md:pt-32"><Outlet /></main>
 
       <footer className="footer-gradient text-muted-foreground py-12 mt-20 border-t border-border/40">
         <div className="container mx-auto px-4">
