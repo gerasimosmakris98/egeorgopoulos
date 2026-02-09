@@ -8,6 +8,7 @@ import {
   Shield, TrendingUp, Search, FileCheck,
   CheckCircle, ArrowRight, Linkedin
 } from 'lucide-react';
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 const Services: React.FC = () => {
   // Static services data
@@ -86,12 +87,27 @@ const Services: React.FC = () => {
     }
   ];
 
+  const servicesSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": services.map((s, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "item": {
+        "@type": "Service",
+        "name": s.title,
+        "description": s.description
+      }
+    }))
+  };
+
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 md:py-16">
       <SEO
         title="Services"
         description="Comprehensive Financial Crime Compliance services including AML/CFT, KYC/KYB, Blockchain Forensics, and Regulatory Advisory."
         url="/services"
+        schema={servicesSchema}
       />
       {/* Hero Section */}
       <div className="text-center mb-12 md:mb-16 fade-in-up">
@@ -115,8 +131,9 @@ const Services: React.FC = () => {
             return (
               <Card
                 key={service.id}
-                className="glass-panel border-white/5 hover:border-primary/20 hover:shadow-premium transition-all duration-500 hover:scale-[1.01] group"
+                className="glass-panel border-white/5 hover:border-primary/20 hover:shadow-premium transition-all duration-500 hover:scale-[1.01] group cursor-pointer"
                 style={{ '--i': index } as any}
+                onClick={() => trackEvent(ANALYTICS_EVENTS.SERVICE_CLICK, { service_id: service.id, service_title: service.title })}
               >
                 <CardHeader>
                   <div className="flex items-start gap-4">

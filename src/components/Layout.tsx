@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { SEO } from "@/components/SEO";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
@@ -71,9 +72,25 @@ const Layout = () => {
     }
   ];
 
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Efstathios Georgopoulos",
+    "jobTitle": "Financial Crime Compliance & Blockchain Expert",
+    "url": "https://egeorgopoulos-b2e9b.web.app",
+    "sameAs": [
+      "https://www.linkedin.com/in/efstathios-georgopoulos/"
+    ],
+    "description": "Multilingual Compliance & Blockchain Specialist with deep expertise in AML/CFT, fraud detection, and forensic financial analysis.",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Ebury"
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <SEO />
+      <SEO schema={personSchema} />
       <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />
       <nav
         className={cn(
@@ -128,7 +145,12 @@ const Layout = () => {
 
             <div className="hidden md:flex items-center gap-4">
               <Button variant="outline" size="sm" asChild className="rounded-full px-6 border-white/10 hover:bg-white/5 hover:text-primary">
-                <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://www.linkedin.com/in/efstathios-georgopoulos/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent(ANALYTICS_EVENTS.LINKEDIN_CLICK, { location: 'navbar_desktop' })}
+                >
                   LinkedIn
                 </a>
               </Button>
@@ -178,7 +200,12 @@ const Layout = () => {
 
               <div className="mt-4 pt-4 border-t border-white/10">
                 <Button variant="outline" size="sm" asChild className="w-full rounded-full border-white/10">
-                  <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://www.linkedin.com/in/efstathios-georgopoulos/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackEvent(ANALYTICS_EVENTS.LINKEDIN_CLICK, { location: 'navbar_mobile' })}
+                  >
                     LinkedIn
                   </a>
                 </Button>

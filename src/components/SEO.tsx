@@ -6,6 +6,7 @@ interface SEOProps {
     image?: string;
     url?: string;
     type?: string;
+    schema?: object;
 }
 
 export const SEO = ({
@@ -13,7 +14,8 @@ export const SEO = ({
     description,
     image = '/og-image.png',
     url,
-    type = 'website'
+    type = 'website',
+    schema
 }: SEOProps) => {
     const siteTitle = "Efstathios Georgopoulos | Financial Crime Compliance & Blockchain Expert";
     const defaultDescription = "Multilingual QA Analyst at Ebury & Blockchain Specialist. Expert in AML/CFT, Sanctions, and Crypto Forensics. Based in Madrid.";
@@ -44,6 +46,13 @@ export const SEO = ({
             <meta property="twitter:title" content={metaTitle} />
             <meta property="twitter:description" content={metaDescription} />
             <meta property="twitter:image" content={metaImage} />
+
+            {/* Structured Data (JSON-LD) */}
+            {schema && (
+                <script type="application/ld+json">
+                    {JSON.stringify(schema)}
+                </script>
+            )}
         </Helmet>
     );
 };

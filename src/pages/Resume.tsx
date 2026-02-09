@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useUI } from '@/contexts/UIContext';
 import { SEO } from "@/components/SEO";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 const Resume: React.FC = () => {
   const { openLiveCV, openContact } = useUI();
@@ -134,10 +135,16 @@ const Resume: React.FC = () => {
         <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-bold text-primary mb-2 tracking-tight">Resume</h1>
         <p className="text-lg md:text-xl text-muted-foreground mb-6">{personalInfo.title} • {personalInfo.location}</p>
         <div className="flex flex-wrap justify-center gap-3">
-          <Button variant="outline" onClick={openLiveCV} className="border-primary/20 hover:bg-primary/10">
+          <Button variant="outline" onClick={() => {
+            trackEvent(ANALYTICS_EVENTS.VIEW_CV, { location: 'resume_header' });
+            openLiveCV();
+          }} className="border-primary/20 hover:bg-primary/10">
             <ExternalLink className="mr-2 w-4 h-4" /> View Live CV
           </Button>
-          <Button onClick={openContact} className="shadow-premium">
+          <Button onClick={() => {
+            trackEvent(ANALYTICS_EVENTS.CONTACT_SUBMIT, { location: 'resume_header' });
+            openContact();
+          }} className="shadow-premium">
             <Mail className="mr-2 w-4 h-4" /> Contact Me
           </Button>
         </div>
@@ -224,7 +231,13 @@ const Resume: React.FC = () => {
               </p>
 
               <div className="mt-6 pt-6 border-t border-white/10 flex flex-col gap-3">
-                <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm hover:text-primary transition-colors">
+                <a
+                  href="https://www.linkedin.com/in/efstathios-georgopoulos/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
+                  onClick={() => trackEvent(ANALYTICS_EVENTS.LINKEDIN_CLICK, { location: 'resume_sidebar' })}
+                >
                   <Linkedin className="w-4 h-4" /> linkedin.com/in/efstathios-georgopoulos
                 </a>
               </div>

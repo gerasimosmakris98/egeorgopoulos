@@ -14,6 +14,7 @@ import { HelpCircle, Search, Shield, Zap, Send } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import ContactForm from "@/components/ContactForm";
 import { SubscriptionActions } from "@/components/SubscriptionActions";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 import { useState } from "react";
 
 const Faq = () => {
@@ -111,6 +112,19 @@ const Faq = () => {
         }))
     }));
 
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faqsData.map(f => ({
+            "@type": "Question",
+            "name": f.question,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": f.answer
+            }
+        }))
+    };
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -130,6 +144,7 @@ const Faq = () => {
                 title="FAQ"
                 description="Frequently Asked Questions about Compliance services, Blockchain consulting, and collaboration."
                 url="/faqs"
+                schema={faqSchema}
             />
             <div className="container mx-auto px-4 relative z-10 max-w-4xl">
                 <motion.div
@@ -188,7 +203,10 @@ const Faq = () => {
                             <p className="text-muted-foreground mb-6">
                                 Didn't find what you were looking for?
                             </p>
-                            <Button size="lg" onClick={() => setIsContactOpen(true)} className="h-14 px-8 rounded-full shadow-premium">
+                            <Button size="lg" onClick={() => {
+                                trackEvent(ANALYTICS_EVENTS.CONTACT_SUBMIT, { location: 'faq_page' });
+                                setIsContactOpen(true);
+                            }} className="h-14 px-8 rounded-full shadow-premium">
                                 Ask me directly
                                 <Send className="w-4 h-4 ml-2" />
                             </Button>

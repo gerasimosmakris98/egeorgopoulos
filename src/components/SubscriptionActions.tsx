@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -28,7 +29,10 @@ export const SubscriptionActions = ({ variant = "outline", size = "sm", classNam
                 <Button
                     variant={variant}
                     size={size}
-                    onClick={() => setOpenForm("subscribe")}
+                    onClick={() => {
+                        trackEvent(ANALYTICS_EVENTS.SUBSCRIBE, { location: 'subscription_manager' });
+                        setOpenForm("subscribe");
+                    }}
                     className="gap-2"
                 >
                     <Mail className="h-4 w-4" />
@@ -37,7 +41,10 @@ export const SubscriptionActions = ({ variant = "outline", size = "sm", classNam
                 <Button
                     variant="ghost"
                     size={size}
-                    onClick={() => setOpenForm("unsubscribe")}
+                    onClick={() => {
+                        trackEvent(ANALYTICS_EVENTS.UNSUBSCRIBE, { location: 'subscription_manager' });
+                        setOpenForm("unsubscribe");
+                    }}
                     className="gap-2 text-muted-foreground hover:text-destructive"
                 >
                     <MailMinus className="h-4 w-4" />

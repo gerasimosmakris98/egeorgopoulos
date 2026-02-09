@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ChevronDown, Linkedin, MapPin, Star, Award, TrendingUp, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useUI } from "@/contexts/UIContext";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 const Hero = () => {
   const { openLiveCV, openContact } = useUI();
@@ -25,6 +26,7 @@ const Hero = () => {
   };
 
   const scrollToSection = (id: string) => {
+    trackEvent(ANALYTICS_EVENTS.NAV_CLICK, { target: id, location: 'hero_scroll' });
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -81,7 +83,10 @@ const Hero = () => {
               <Button
                 variant="default"
                 size="default"
-                onClick={openContact}
+                onClick={() => {
+                  trackEvent(ANALYTICS_EVENTS.CONTACT_SUBMIT, { location: 'hero' });
+                  openContact();
+                }}
                 className="w-full sm:w-auto min-w-[160px] md:min-w-[180px] text-sm md:text-lg h-11 md:h-12 font-medium shadow-premium hover:scale-105 transition-transform"
               >
                 Get In Touch
@@ -89,7 +94,10 @@ const Hero = () => {
               <Button
                 variant="outline"
                 size="default"
-                onClick={openLiveCV}
+                onClick={() => {
+                  trackEvent(ANALYTICS_EVENTS.VIEW_CV, { location: 'hero' });
+                  openLiveCV();
+                }}
                 className="w-full sm:w-auto min-w-[160px] md:min-w-[180px] text-sm md:text-lg h-11 md:h-12 font-medium glass-effect border-white/20 hover:bg-white/10"
               >
                 <Award className="mr-2 md:mr-3 w-4 md:w-5 h-4 md:h-5" />
