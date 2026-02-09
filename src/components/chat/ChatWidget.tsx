@@ -69,11 +69,11 @@ const ChatWidget = () => {
 
             // Announce actions first
             if (name === "open_contact") {
-              assistantContent += "\n\n*(Opening Contact Form...)*";
+              assistantContent += "\n\n*(Opening Contact Form in Notion...)*";
             } else if (name === "open_subscribe") {
-              assistantContent += "\n\n*(Opening Subscription Form...)*";
+              assistantContent += "\n\n*(Opening Subscription Form in Notion...)*";
             } else if (name === "open_live_cv") {
-              assistantContent += "\n\n*(Opening Live CV...)*";
+              assistantContent += "\n\n*(Opening Live CV in Notion...)*";
             } else if (name === "navigate_to") {
               const navigationArgs = args as { path?: string };
               if (navigationArgs && navigationArgs.path) {
