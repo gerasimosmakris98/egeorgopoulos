@@ -90,143 +90,146 @@ const Skills: React.FC = () => {
         />
       ))}
     </div>
+
   );
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-24 relative overflow-hidden">
-      <SEO
-        title="Core Skills & Expertise"
-        description="Deep expertise in AML/CFT, Blockchain Forensics, Sanctions, and Regulatory Compliance."
-        keywords="Compliance Skills, AML Expertise, Blockchain Forensics Professional, QA Analyst Skills"
-        url="/skills"
-      />
-      {/* Hero Section */}
-      <div className="text-center mb-12 md:mb-16 fade-in-up">
-        <Badge variant="outline" className="mb-4 md:mb-6 text-sm px-4 py-2 border-primary/20 text-primary bg-primary/5">
-          Expertise
-        </Badge>
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-playfair font-bold mb-6 text-primary tracking-tight">
-          Skills & Competencies
-        </h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-          A comprehensive overview of my technical expertise, tools proficiency, and professional skills
-          developed through years of experience in financial compliance and blockchain technology.
-        </p>
-      </div>
-
-      {/* Skills Section */}
-      <section className="mb-16">
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="p-2 rounded-lg bg-primary/10 backdrop-blur">
-            <Zap className="w-5 h-5 text-primary" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-playfair font-bold">Professional Skills</h2>
+      <div className="container max-w-5xl mx-auto px-4 md:px-6 relative z-10">
+        <SEO
+          title="Core Skills & Expertise"
+          description="Deep expertise in AML/CFT, Blockchain Forensics, Sanctions, and Regulatory Compliance."
+          keywords="Compliance Skills, AML Expertise, Blockchain Forensics Professional, QA Analyst Skills"
+          url="/skills"
+        />
+        {/* Hero Section */}
+        <div className="text-center mb-12 md:mb-16 fade-in-up">
+          <Badge variant="outline" className="mb-4 md:mb-6 text-sm px-4 py-2 border-primary/20 text-primary bg-primary/5">
+            Expertise
+          </Badge>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-playfair font-bold mb-6 text-primary tracking-tight">
+            Skills & Competencies
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            A comprehensive overview of my technical expertise, tools proficiency, and professional skills
+            developed through years of experience in financial compliance and blockchain technology.
+          </p>
         </div>
 
-        <Tabs value={activeCategory} onValueChange={setActiveCategory}>
-          <TabsList className="flex-wrap h-auto p-1 mb-8 bg-black/20 backdrop-blur-md border border-white/5 rounded-xl mx-auto justify-center">
-            {categories.map(cat => {
-              const Icon = getCategoryIcon(cat);
-              return (
-                <TabsTrigger
-                  key={cat}
-                  value={cat}
-                  className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
-                >
-                  <Icon className="w-4 h-4" />
-                  {cat}
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
-
-          <TabsContent value={activeCategory}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
-              {filteredSkills.map((skill, index) => (
-                <Card
-                  key={skill.id}
-                  className="glass-panel border-white/5 hover:border-primary/20 hover:shadow-premium transition-all duration-300 hover:scale-[1.02] group relative overflow-hidden"
-                  style={{ '--i': index } as any}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <CardContent className="p-6 relative">
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{skill.name}</h3>
-                      <Badge variant="secondary" className="text-xs bg-primary/10 text-primary border-primary/20">
-                        {skill.category}
-                      </Badge>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Proficiency</span>
-                        <span className="font-bold text-primary">{skill.proficiency}%</span>
-                      </div>
-                      <Progress value={skill.proficiency} className="h-2 bg-primary/10" indicatorClassName="bg-gradient-to-r from-primary to-accent" />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+        {/* Skills Section */}
+        <section className="mb-16">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <div className="p-2 rounded-lg bg-primary/10 backdrop-blur">
+              <Zap className="w-5 h-5 text-primary" />
             </div>
-
-            {filteredSkills.length === 0 && (
-              <div className="text-center py-12 text-muted-foreground">
-                No skills found in this category.
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </section>
-
-      {/* Languages Section */}
-      <section className="mb-16">
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="p-2 rounded-lg bg-primary/10 backdrop-blur">
-            <Globe className="w-5 h-5 text-primary" />
+            <h2 className="text-3xl md:text-4xl font-playfair font-bold">Professional Skills</h2>
           </div>
-          <h2 className="text-3xl md:text-4xl font-playfair font-bold">Languages</h2>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
-          {languages.map((lang, index) => (
-            <Card
-              key={lang.id}
-              className="glass-panel border-white/5 hover:border-primary/20 hover:shadow-premium transition-all duration-300 hover:scale-[1.02] group"
-              style={{ '--i': index } as any}
-            >
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-semibold text-lg">{lang.name}</h3>
-                  <Badge variant="outline">{lang.proficiency}</Badge>
+          <Tabs value={activeCategory} onValueChange={setActiveCategory}>
+            <TabsList className="flex-wrap h-auto p-1 mb-8 bg-black/20 backdrop-blur-md border border-white/5 rounded-xl mx-auto justify-center">
+              {categories.map(cat => {
+                const Icon = getCategoryIcon(cat);
+                return (
+                  <TabsTrigger
+                    key={cat}
+                    value={cat}
+                    className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                  >
+                    <Icon className="w-4 h-4" />
+                    {cat}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+
+            <TabsContent value={activeCategory}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
+                {filteredSkills.map((skill, index) => (
+                  <Card
+                    key={skill.id}
+                    className="glass-panel border-white/5 hover:border-primary/20 hover:shadow-premium transition-all duration-300 hover:scale-[1.02] group relative overflow-hidden"
+                    style={{ '--i': index } as any}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <CardContent className="p-6 relative">
+                      <div className="flex justify-between items-start mb-4">
+                        <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{skill.name}</h3>
+                        <Badge variant="secondary" className="text-xs bg-primary/10 text-primary border-primary/20">
+                          {skill.category}
+                        </Badge>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Proficiency</span>
+                          <span className="font-bold text-primary">{skill.proficiency}%</span>
+                        </div>
+                        <Progress value={skill.proficiency} className="h-2 bg-primary/10" indicatorClassName="bg-gradient-to-r from-primary to-accent" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {filteredSkills.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  No skills found in this category.
                 </div>
-                {renderStars(lang.level)}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+              )}
+            </TabsContent>
+          </Tabs>
+        </section>
 
-      {/* CTA Section */}
-      <section className="text-center py-12 glass-effect rounded-2xl">
-        <h2 className="text-2xl md:text-3xl font-playfair font-semibold mb-4">
-          Interested in Collaborating?
-        </h2>
-        <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Let's discuss how my skills and expertise can contribute to your organization's success
-          in compliance, financial crime prevention, or blockchain initiatives.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button asChild size="lg">
-            <Link to="/contact">
-              Get In Touch <ArrowRight className="ml-2 w-4 h-4" />
-            </Link>
-          </Button>
-          <Button variant="outline" size="lg" asChild>
-            <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
-              View LinkedIn Profile
-            </a>
-          </Button>
-        </div>
-      </section>
+        {/* Languages Section */}
+        <section className="mb-16">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <div className="p-2 rounded-lg bg-primary/10 backdrop-blur">
+              <Globe className="w-5 h-5 text-primary" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-playfair font-bold">Languages</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
+            {languages.map((lang, index) => (
+              <Card
+                key={lang.id}
+                className="glass-panel border-white/5 hover:border-primary/20 hover:shadow-premium transition-all duration-300 hover:scale-[1.02] group"
+                style={{ '--i': index } as any}
+              >
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-semibold text-lg">{lang.name}</h3>
+                    <Badge variant="outline">{lang.proficiency}</Badge>
+                  </div>
+                  {renderStars(lang.level)}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="text-center py-12 glass-effect rounded-2xl">
+          <h2 className="text-2xl md:text-3xl font-playfair font-semibold mb-4">
+            Interested in Collaborating?
+          </h2>
+          <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Let's discuss how my skills and expertise can contribute to your organization's success
+            in compliance, financial crime prevention, or blockchain initiatives.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg">
+              <Link to="/contact">
+                Get In Touch <ArrowRight className="ml-2 w-4 h-4" />
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
+                View LinkedIn Profile
+              </a>
+            </Button>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

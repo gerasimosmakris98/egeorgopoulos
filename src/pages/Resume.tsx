@@ -126,185 +126,187 @@ const Resume: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-24 relative">
-      <SEO
-        title="Professional Experience"
-        description="Detailed resume of Efstathios Georgopoulos - QA Analyst at Ebury and Blockchain specialist."
-        keywords="Efstathios Georgopoulos Resume, Compliance Officer Experience, QA Analyst Ebury"
-        url="/resume"
-      />
-      {/* Header / Intro */}
-      <div className="text-center mb-12 fade-in-up">
-        <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-bold text-primary mb-2 tracking-tight">Resume</h1>
-        <p className="text-lg md:text-xl text-muted-foreground mb-6">{personalInfo.title} • {personalInfo.location}</p>
-        <div className="flex flex-wrap justify-center gap-3">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" onClick={() => {
-                  trackEvent(ANALYTICS_EVENTS.VIEW_CV, { location: 'resume_header' });
-                  openLiveCV();
-                }} className="border-primary/20 hover:bg-primary/10">
-                  <ExternalLink className="mr-2 w-4 h-4" /> View Live CV
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Opens in Notion</p>
-              </TooltipContent>
-            </Tooltip>
+      <div className="container max-w-5xl mx-auto px-4 md:px-6 relative z-10">
+        <SEO
+          title="Professional Experience"
+          description="Detailed resume of Efstathios Georgopoulos - QA Analyst at Ebury and Blockchain specialist."
+          keywords="Efstathios Georgopoulos Resume, Compliance Officer Experience, QA Analyst Ebury"
+          url="/resume"
+        />
+        {/* Header / Intro */}
+        <div className="text-center mb-12 fade-in-up">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-bold text-primary mb-2 tracking-tight">Resume</h1>
+          <p className="text-lg md:text-xl text-muted-foreground mb-6">{personalInfo.title} • {personalInfo.location}</p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" onClick={() => {
+                    trackEvent(ANALYTICS_EVENTS.VIEW_CV, { location: 'resume_header' });
+                    openLiveCV();
+                  }} className="border-primary/20 hover:bg-primary/10">
+                    <ExternalLink className="mr-2 w-4 h-4" /> View Live CV
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Opens in Notion</p>
+                </TooltipContent>
+              </Tooltip>
 
-            <Button onClick={() => {
-              trackEvent(ANALYTICS_EVENTS.CONTACT_SUBMIT, { location: 'resume_header' });
-              openContact();
-            }} className="shadow-premium">
-              <Mail className="mr-2 w-4 h-4" /> Contact Me
-            </Button>
-          </TooltipProvider>
+              <Button onClick={() => {
+                trackEvent(ANALYTICS_EVENTS.CONTACT_SUBMIT, { location: 'resume_header' });
+                openContact();
+              }} className="shadow-premium">
+                <Mail className="mr-2 w-4 h-4" /> Contact Me
+              </Button>
+            </TooltipProvider>
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
 
-        {/* Left Column: Experience & Education */}
-        <div className="lg:col-span-2 space-y-12">
+          {/* Left Column: Experience & Education */}
+          <div className="lg:col-span-2 space-y-12">
 
-          {/* Experience Section */}
-          <section className="fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Briefcase className="w-6 h-6 text-primary" />
+            {/* Experience Section */}
+            <section className="fade-in-up" style={{ animationDelay: '0.1s' }}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Briefcase className="w-6 h-6 text-primary" />
+                </div>
+                <h2 className="text-2xl md:text-3xl font-playfair font-bold">Professional Experience</h2>
               </div>
-              <h2 className="text-2xl md:text-3xl font-playfair font-bold">Professional Experience</h2>
-            </div>
 
-            <div className="space-y-8 border-l border-white/10 ml-5 pl-8 relative">
-              {experience.map((job, index) => (
-                <div key={job.id} className="relative group">
-                  {/* Timeline dot */}
-                  <span className="absolute -left-[39px] top-1 h-5 w-5 rounded-full border-4 border-background bg-primary transition-transform group-hover:scale-125 duration-300" />
+              <div className="space-y-8 border-l border-white/10 ml-5 pl-8 relative">
+                {experience.map((job, index) => (
+                  <div key={job.id} className="relative group">
+                    {/* Timeline dot */}
+                    <span className="absolute -left-[39px] top-1 h-5 w-5 rounded-full border-4 border-background bg-primary transition-transform group-hover:scale-125 duration-300" />
 
-                  <div className="mb-2">
-                    <h3 className="text-xl md:text-2xl font-semibold">{job.title}</h3>
-                    <div className="text-primary font-medium text-lg">{job.company}</div>
-                    <div className="text-sm text-muted-foreground flex gap-3 mt-1">
-                      <span>{job.period}</span>
-                      <span>•</span>
-                      <span>{job.location}</span>
+                    <div className="mb-2">
+                      <h3 className="text-xl md:text-2xl font-semibold">{job.title}</h3>
+                      <div className="text-primary font-medium text-lg">{job.company}</div>
+                      <div className="text-sm text-muted-foreground flex gap-3 mt-1">
+                        <span>{job.period}</span>
+                        <span>•</span>
+                        <span>{job.location}</span>
+                      </div>
                     </div>
+
+                    <ul className="list-disc list-outside ml-4 space-y-1 text-muted-foreground/90">
+                      {job.description.map((desc, i) => (
+                        <li key={i}>{desc}</li>
+                      ))}
+                    </ul>
                   </div>
-
-                  <ul className="list-disc list-outside ml-4 space-y-1 text-muted-foreground/90">
-                    {job.description.map((desc, i) => (
-                      <li key={i}>{desc}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Education Section */}
-          <section className="fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <GraduationCap className="w-6 h-6 text-primary" />
-              </div>
-              <h2 className="text-2xl md:text-3xl font-playfair font-bold">Education</h2>
-            </div>
-
-            <div className="space-y-8 border-l border-white/10 ml-5 pl-8 relative">
-              {education.map((edu, index) => (
-                <div key={edu.id} className="relative group">
-                  <span className="absolute -left-[39px] top-1 h-5 w-5 rounded-full border-4 border-background bg-primary transition-transform group-hover:scale-125 duration-300" />
-
-                  <div className="mb-2">
-                    <h3 className="text-xl md:text-2xl font-semibold">{edu.degree}</h3>
-                    <div className="text-primary font-medium text-lg">{edu.school}</div>
-                    <div className="text-sm text-muted-foreground mt-1">{edu.year}</div>
-                  </div>
-                  <p className="text-muted-foreground">{edu.description}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-        </div>
-
-        {/* Right Column: Skills, Languages, Certifications */}
-        <div className="space-y-8">
-
-          {/* Summary */}
-          <Card className="glass-panel border-white/5 hover:border-primary/20 transition-all duration-300 fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <CardContent className="p-6">
-              <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-primary" /> About
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                {personalInfo.summary}
-              </p>
-
-              <div className="mt-6 pt-6 border-t border-white/10 flex flex-col gap-3">
-                <a
-                  href="https://www.linkedin.com/in/efstathios-georgopoulos/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
-                  onClick={() => trackEvent(ANALYTICS_EVENTS.LINKEDIN_CLICK, { location: 'resume_sidebar' })}
-                >
-                  <Linkedin className="w-4 h-4" /> linkedin.com/in/efstathios-georgopoulos
-                </a>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Certifications */}
-          <Card className="glass-panel border-white/5 hover:border-primary/20 transition-all duration-300 fade-in-up" style={{ animationDelay: '0.4s' }}>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Award className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold text-lg">Certifications</h3>
-              </div>
-              <ul className="space-y-3">
-                {certifications.map((cert, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <Badge variant="secondary" className="mt-0.5 min-w-[6px] min-h-[6px] p-0 rounded-full bg-primary" />
-                    {cert}
-                  </li>
                 ))}
-              </ul>
-            </CardContent>
-          </Card>
+              </div>
+            </section>
 
-          {/* Skills Preview */}
-          <Card className="glass-panel border-white/5 hover:border-primary/20 transition-all duration-300 fade-in-up" style={{ animationDelay: '0.5s' }}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
+            {/* Education Section */}
+            <section className="fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <GraduationCap className="w-6 h-6 text-primary" />
+                </div>
+                <h2 className="text-2xl md:text-3xl font-playfair font-bold">Education</h2>
+              </div>
+
+              <div className="space-y-8 border-l border-white/10 ml-5 pl-8 relative">
+                {education.map((edu, index) => (
+                  <div key={edu.id} className="relative group">
+                    <span className="absolute -left-[39px] top-1 h-5 w-5 rounded-full border-4 border-background bg-primary transition-transform group-hover:scale-125 duration-300" />
+
+                    <div className="mb-2">
+                      <h3 className="text-xl md:text-2xl font-semibold">{edu.degree}</h3>
+                      <div className="text-primary font-medium text-lg">{edu.school}</div>
+                      <div className="text-sm text-muted-foreground mt-1">{edu.year}</div>
+                    </div>
+                    <p className="text-muted-foreground">{edu.description}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+          </div>
+
+          {/* Right Column: Skills, Languages, Certifications */}
+          <div className="space-y-8">
+
+            {/* Summary */}
+            <Card className="glass-panel border-white/5 hover:border-primary/20 transition-all duration-300 fade-in-up" style={{ animationDelay: '0.3s' }}>
+              <CardContent className="p-6">
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-primary" /> About
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  {personalInfo.summary}
+                </p>
+
+                <div className="mt-6 pt-6 border-t border-white/10 flex flex-col gap-3">
+                  <a
+                    href="https://www.linkedin.com/in/efstathios-georgopoulos/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
+                    onClick={() => trackEvent(ANALYTICS_EVENTS.LINKEDIN_CLICK, { location: 'resume_sidebar' })}
+                  >
+                    <Linkedin className="w-4 h-4" /> linkedin.com/in/efstathios-georgopoulos
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Certifications */}
+            <Card className="glass-panel border-white/5 hover:border-primary/20 transition-all duration-300 fade-in-up" style={{ animationDelay: '0.4s' }}>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-4">
                   <Award className="w-5 h-5 text-primary" />
-                  <h3 className="font-semibold text-lg">Key Skills</h3>
+                  <h3 className="font-semibold text-lg">Certifications</h3>
                 </div>
-                <Button variant="ghost" size="sm" asChild className="h-8 text-xs hover:text-primary hover:bg-primary/10">
-                  <Link to="/skills">View All</Link>
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {['AML/CFT', 'KYC/CDD', 'Blockchain', 'Fraud Prevention', 'Risk Assessment', 'Quality Assurance'].map((skill) => (
-                  <Badge key={skill} variant="outline" className="bg-white/5 border-white/10 hover:border-primary/30 transition-colors">{skill}</Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                <ul className="space-y-3">
+                  {certifications.map((cert, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <Badge variant="secondary" className="mt-0.5 min-w-[6px] min-h-[6px] p-0 rounded-full bg-primary" />
+                      {cert}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
 
+            {/* Skills Preview */}
+            <Card className="glass-panel border-white/5 hover:border-primary/20 transition-all duration-300 fade-in-up" style={{ animationDelay: '0.5s' }}>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Award className="w-5 h-5 text-primary" />
+                    <h3 className="font-semibold text-lg">Key Skills</h3>
+                  </div>
+                  <Button variant="ghost" size="sm" asChild className="h-8 text-xs hover:text-primary hover:bg-primary/10">
+                    <Link to="/skills">View All</Link>
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {['AML/CFT', 'KYC/CDD', 'Blockchain', 'Fraud Prevention', 'Risk Assessment', 'Quality Assurance'].map((skill) => (
+                    <Badge key={skill} variant="outline" className="bg-white/5 border-white/10 hover:border-primary/30 transition-colors">{skill}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+          </div>
         </div>
-      </div>
 
-      {/* Bottom CTA */}
-      <div className="mt-16 text-center">
-        <p className="text-muted-foreground mb-4">Looking for a comprehensive overview of my capabilities?</p>
-        <Button asChild size="lg" className="gap-2">
-          <Link to="/skills">
-            Explore Full Skills Matrix <ArrowRight className="w-4 h-4" />
-          </Link>
-        </Button>
+        {/* Bottom CTA */}
+        <div className="mt-16 text-center">
+          <p className="text-muted-foreground mb-4">Looking for a comprehensive overview of my capabilities?</p>
+          <Button asChild size="lg" className="gap-2">
+            <Link to="/skills">
+              Explore Full Skills Matrix <ArrowRight className="w-4 h-4" />
+            </Link>
+          </Button>
+        </div>
       </div>
     </div>
   );

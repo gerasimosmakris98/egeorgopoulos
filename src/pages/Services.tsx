@@ -103,128 +103,130 @@ const Services: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-24 relative overflow-hidden">
-      <SEO
-        title="Compliance & Blockchain Services"
-        description="Bespoke advisory for AML, Blockchain regulation, and risk management."
-        keywords="Compliance Advisory Services, AML Consulting Madrid, Blockchain Audit, Regulatory Gap Analysis"
-        url="/services"
-        schema={servicesSchema}
-      />
-      {/* Hero Section */}
-      <div className="text-center mb-12 md:mb-16 fade-in-up">
-        <Badge variant="outline" className="mb-4 md:mb-6 text-sm px-4 py-2 border-primary/20 text-primary bg-primary/5">
-          Services
-        </Badge>
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-playfair font-bold mb-6 text-primary tracking-tight">
-          Professional Services
-        </h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-          Specialized consulting services in financial crime compliance, regulatory frameworks,
-          and blockchain technology for organizations seeking to enhance their compliance posture.
-        </p>
-      </div>
-
-      {/* Services Grid */}
-      <section className="mb-16 md:mb-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 stagger-children">
-          {services.map((service, index) => {
-            const Icon = service.icon;
-            return (
-              <Card
-                key={service.id}
-                className="glass-panel border-white/5 hover:border-primary/20 hover:shadow-premium transition-all duration-500 hover:scale-[1.01] group cursor-pointer"
-                style={{ '--i': index } as any}
-                onClick={() => trackEvent(ANALYTICS_EVENTS.SERVICE_CLICK, { service_id: service.id, service_title: service.title })}
-              >
-                <CardHeader>
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                      <Icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl md:text-2xl font-playfair font-bold mb-2">
-                        {service.title}
-                      </CardTitle>
-                      <p className="text-muted-foreground text-sm leading-relaxed">
-                        {service.description}
-                      </p>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-3 text-sm text-white/80">
-                        <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Collaboration Areas */}
-      <section className="mb-16">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-playfair font-semibold mb-4">
-            Areas of Collaboration
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            I work with organizations across various sectors to strengthen their compliance frameworks.
+      <div className="container max-w-5xl mx-auto px-4 md:px-6 relative z-10">
+        <SEO
+          title="Compliance & Blockchain Services"
+          description="Bespoke advisory for AML, Blockchain regulation, and risk management."
+          keywords="Compliance Advisory Services, AML Consulting Madrid, Blockchain Audit, Regulatory Gap Analysis"
+          url="/services"
+          schema={servicesSchema}
+        />
+        {/* Hero Section */}
+        <div className="text-center mb-12 md:mb-16 fade-in-up">
+          <Badge variant="outline" className="mb-4 md:mb-6 text-sm px-4 py-2 border-primary/20 text-primary bg-primary/5">
+            Services
+          </Badge>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-playfair font-bold mb-6 text-primary tracking-tight">
+            Professional Services
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            Specialized consulting services in financial crime compliance, regulatory frameworks,
+            and blockchain technology for organizations seeking to enhance their compliance posture.
           </p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-3">
-          {[
-            'Fintech Startups',
-            'Traditional Banking',
-            'Cryptocurrency Exchanges',
-            'Payment Service Providers',
-            'DeFi Protocols',
-            'Regulatory Technology',
-            'Investment Firms',
-            'Neo-Banks'
-          ].map((area, index) => (
-            <Badge
-              key={area}
-              variant="secondary"
-              className="px-4 py-2 text-sm glass-effect hover:shadow-card transition-spring cursor-default"
-              style={{ '--i': index } as any}
-            >
-              {area}
-            </Badge>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="text-center py-12 glass-effect rounded-2xl">
-        <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-2xl md:text-3xl font-playfair font-semibold mb-4">
-            Ready to Strengthen Your Compliance?
-          </h2>
-          <p className="text-muted-foreground mb-8">
-            Whether you need a full compliance program review, specific regulatory guidance,
-            or blockchain compliance expertise, I'm here to help.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg">
-              <Link to="/contact">
-                Start a Conversation <ArrowRight className="ml-2 w-4 h-4" />
-              </Link>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
-                <Linkedin className="mr-2 w-4 h-4" /> Connect on LinkedIn
-              </a>
-            </Button>
+        {/* Services Grid */}
+        <section className="mb-16 md:mb-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 stagger-children">
+            {services.map((service, index) => {
+              const Icon = service.icon;
+              return (
+                <Card
+                  key={service.id}
+                  className="glass-panel border-white/5 hover:border-primary/20 hover:shadow-premium transition-all duration-500 hover:scale-[1.01] group cursor-pointer"
+                  style={{ '--i': index } as any}
+                  onClick={() => trackEvent(ANALYTICS_EVENTS.SERVICE_CLICK, { service_id: service.id, service_title: service.title })}
+                >
+                  <CardHeader>
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                        <Icon className="w-6 h-6 text-primary" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl md:text-2xl font-playfair font-bold mb-2">
+                          {service.title}
+                        </CardTitle>
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                          {service.description}
+                        </p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3">
+                      {service.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-center gap-3 text-sm text-white/80">
+                          <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Collaboration Areas */}
+        <section className="mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-playfair font-semibold mb-4">
+              Areas of Collaboration
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              I work with organizations across various sectors to strengthen their compliance frameworks.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-3">
+            {[
+              'Fintech Startups',
+              'Traditional Banking',
+              'Cryptocurrency Exchanges',
+              'Payment Service Providers',
+              'DeFi Protocols',
+              'Regulatory Technology',
+              'Investment Firms',
+              'Neo-Banks'
+            ].map((area, index) => (
+              <Badge
+                key={area}
+                variant="secondary"
+                className="px-4 py-2 text-sm glass-effect hover:shadow-card transition-spring cursor-default"
+                style={{ '--i': index } as any}
+              >
+                {area}
+              </Badge>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="text-center py-12 glass-effect rounded-2xl">
+          <div className="max-w-2xl mx-auto px-6">
+            <h2 className="text-2xl md:text-3xl font-playfair font-semibold mb-4">
+              Ready to Strengthen Your Compliance?
+            </h2>
+            <p className="text-muted-foreground mb-8">
+              Whether you need a full compliance program review, specific regulatory guidance,
+              or blockchain compliance expertise, I'm here to help.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button asChild size="lg">
+                <Link to="/contact">
+                  Start a Conversation <ArrowRight className="ml-2 w-4 h-4" />
+                </Link>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <a href="https://www.linkedin.com/in/efstathios-georgopoulos/" target="_blank" rel="noopener noreferrer">
+                  <Linkedin className="mr-2 w-4 h-4" /> Connect on LinkedIn
+                </a>
+              </Button>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };
