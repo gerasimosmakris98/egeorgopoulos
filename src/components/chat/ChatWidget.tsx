@@ -1,19 +1,19 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, X, Send, Sparkles, User, ChevronDown } from 'lucide-react';
+import { MessageSquare, X, Send, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
-
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
-
 import { GeminiService, ChatMessage } from '@/services/gemini';
+import { useUI } from "@/contexts/UIContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ChatWidget = () => {
+  const { openContact, openSubscribe, openLiveCV } = useUI();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
     { role: 'assistant', content: "Hi there! I'm Efstathios's AI assistant. Ask me anything about Compliance, Blockchain, or my services! ⚡" }
@@ -53,14 +53,39 @@ const ChatWidget = () => {
         parts: [{ text: m.content }]
       }));
 
-      const stream = await GeminiService.streamChat(history, input.trim());
+      const stream = await GeminiService.streamChat(history, input.trim(), `Current Path: ${location.pathname}`);
 
       let assistantContent = "";
       setMessages(prev => [...prev, { role: 'assistant', content: "" }]);
 
       for await (const chunk of stream) {
+        // Handle Function Calls
+        const functionCalls = chunk.functionCalls();
+        if (functionCalls && functionCalls.length > 0) {
+          for (const call of functionCalls) {
+            const { name, args } = call;
+            if (name === "open_contact") {
+              openContact();
+              assistantContent += "\n\n*(Opening Contact Form...)*";
+            } else if (name === "open_subscribe") {
+              openSubscribe();
+              assistantContent += "\n\n*(Opening Subscription Form...)*";
+            } else if (name === "open_live_cv") {
+              openLiveCV();
+              assistantContent += "\n\n*(Opening Live CV...)*";
+            } else if (name === "navigate_to") {
+              if (args && args.path) {
+                navigate(args.path as string);
+                assistantContent += `\n\n*(Navigating to ${args.path}...)*`;
+              }
+            }
+          }
+        }
+
         const chunkText = chunk.text();
-        assistantContent += chunkText;
+        if (chunkText) {
+          assistantContent += chunkText;
+        }
 
         setMessages(prev => {
           const updated = [...prev];

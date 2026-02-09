@@ -7,6 +7,10 @@ interface UIContextType {
     isContactOpen: boolean;
     openContact: () => void;
     closeContact: () => void;
+    subscribeState: "subscribe" | "unsubscribe" | null;
+    openSubscribe: () => void;
+    openUnsubscribe: () => void;
+    closeSubscribe: () => void;
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
@@ -14,6 +18,7 @@ const UIContext = createContext<UIContextType | undefined>(undefined);
 export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [isLiveCVOpen, setIsLiveCVOpen] = useState(false);
     const [isContactOpen, setIsContactOpen] = useState(false);
+    const [subscribeState, setSubscribeState] = useState<"subscribe" | "unsubscribe" | null>(null);
 
     const openLiveCV = () => setIsLiveCVOpen(true);
     const closeLiveCV = () => setIsLiveCVOpen(false);
@@ -21,10 +26,15 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const openContact = () => setIsContactOpen(true);
     const closeContact = () => setIsContactOpen(false);
 
+    const openSubscribe = () => setSubscribeState("subscribe");
+    const openUnsubscribe = () => setSubscribeState("unsubscribe");
+    const closeSubscribe = () => setSubscribeState(null);
+
     return (
         <UIContext.Provider value={{
             isLiveCVOpen, openLiveCV, closeLiveCV,
-            isContactOpen, openContact, closeContact
+            isContactOpen, openContact, closeContact,
+            subscribeState, openSubscribe, openUnsubscribe, closeSubscribe
         }}>
             {children}
         </UIContext.Provider>
