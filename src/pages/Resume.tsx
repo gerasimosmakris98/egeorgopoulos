@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -136,18 +137,35 @@ const Resume: React.FC = () => {
         <h1 className="text-3xl md:text-5xl lg:text-6xl font-playfair font-bold text-primary mb-2 tracking-tight">Resume</h1>
         <p className="text-lg md:text-xl text-muted-foreground mb-6">{personalInfo.title} • {personalInfo.location}</p>
         <div className="flex flex-wrap justify-center gap-3">
-          <Button variant="outline" onClick={() => {
-            trackEvent(ANALYTICS_EVENTS.VIEW_CV, { location: 'resume_header' });
-            openLiveCV();
-          }} className="border-primary/20 hover:bg-primary/10">
-            <ExternalLink className="mr-2 w-4 h-4" /> View Live CV
-          </Button>
-          <Button onClick={() => {
-            trackEvent(ANALYTICS_EVENTS.CONTACT_SUBMIT, { location: 'resume_header' });
-            openContact();
-          }} className="shadow-premium">
-            <Mail className="mr-2 w-4 h-4" /> Contact Me
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" onClick={() => {
+                  trackEvent(ANALYTICS_EVENTS.VIEW_CV, { location: 'resume_header' });
+                  openLiveCV();
+                }} className="border-primary/20 hover:bg-primary/10">
+                  <ExternalLink className="mr-2 w-4 h-4" /> View Live CV
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Opens interactive CV in Notion</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={() => {
+                  trackEvent(ANALYTICS_EVENTS.CONTACT_SUBMIT, { location: 'resume_header' });
+                  openContact();
+                }} className="shadow-premium">
+                  <Mail className="mr-2 w-4 h-4" /> Contact Me
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Opens contact form</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
 

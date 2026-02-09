@@ -1,6 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { MessageSquare, X, Send, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
@@ -65,20 +66,42 @@ const ChatWidget = () => {
         if (functionCalls && functionCalls.length > 0) {
           for (const call of functionCalls) {
             const { name, args } = call;
+
+            // Announce actions first
             if (name === "open_contact") {
-              openContact();
               assistantContent += "\n\n*(Opening Contact Form...)*";
             } else if (name === "open_subscribe") {
-              openSubscribe();
               assistantContent += "\n\n*(Opening Subscription Form...)*";
             } else if (name === "open_live_cv") {
-              openLiveCV();
               assistantContent += "\n\n*(Opening Live CV...)*";
             } else if (name === "navigate_to") {
               const navigationArgs = args as { path?: string };
               if (navigationArgs && navigationArgs.path) {
-                navigate(navigationArgs.path);
                 assistantContent += `\n\n*(Navigating to ${navigationArgs.path}...)*`;
+              }
+            }
+
+            // Update UI with announcement
+            setMessages(prev => {
+              const updated = [...prev];
+              updated[updated.length - 1] = { role: 'assistant', content: assistantContent };
+              return updated;
+            });
+
+            // Artificial delay to let user read the announcement
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            // Execute action
+            if (name === "open_contact") {
+              openContact();
+            } else if (name === "open_subscribe") {
+              openSubscribe();
+            } else if (name === "open_live_cv") {
+              openLiveCV();
+            } else if (name === "navigate_to") {
+              const navigationArgs = args as { path?: string };
+              if (navigationArgs && navigationArgs.path) {
+                navigate(navigationArgs.path);
               }
             }
           }
@@ -213,20 +236,41 @@ const ChatWidget = () => {
               {/* Suggested Questions Pills */}
               {messages.length === 1 && !isLoading && (
                 <div className="flex flex-wrap gap-2 px-2">
-                  {[
-                    "What services do you offer?",
-                    "Show me your Live CV",
-                    "How much does it cost?",
-                    "Subscribe to newsletter"
-                  ].map((q, i) => (
-                    <button
-                      key={i}
-                      onClick={() => handleSend(q)}
-                      className="text-xs bg-zinc-800/50 hover:bg-zinc-700/50 border border-white/5 text-zinc-300 px-3 py-1.5 rounded-full transition-colors whitespace-nowrap"
-                    >
-                      {q}
-                    </button>
-                  ))}
+                  <TooltipProvider>
+                    {[
+                      "What services do you offer?",
+                      "Show me your Live CV",
+                      "How much does it cost?",
+                      "Subscribe to newsletter"
+                    ].map((q, i) => {
+                      const isNotionAction = q.includes("Live CV") || q.includes("Subscribe");
+
+                      const ButtonElement = (
+                        <button
+                          key={i}
+                          onClick={() => handleSend(q)}
+                          className="text-xs bg-zinc-800/50 hover:bg-zinc-700/50 border border-white/5 text-zinc-300 px-3 py-1.5 rounded-full transition-colors whitespace-nowrap"
+                        >
+                          {q}
+                        </button>
+                      );
+
+                      if (isNotionAction) {
+                        return (
+                          <Tooltip key={i}>
+                            <TooltipTrigger asChild>
+                              {ButtonElement}
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                              <p>Opens in Notion</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        );
+                      }
+
+                      return ButtonElement;
+                    })}
+                  </TooltipProvider>
                 </div>
               )}
 

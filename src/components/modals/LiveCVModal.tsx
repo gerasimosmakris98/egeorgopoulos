@@ -34,9 +34,6 @@ const LiveCVModal = () => {
                             </svg>
                             Back
                         </Button>
-                        <span className="ml-3 text-xs text-white/50 bg-black/20 px-2 py-1 rounded-md backdrop-blur-sm">
-                            Powered by Notion
-                        </span>
                     </div>
                     <div className="flex-1 w-full bg-white/5 h-full">
                         <iframe
