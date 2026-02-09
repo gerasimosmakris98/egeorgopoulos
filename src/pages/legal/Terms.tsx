@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { ArrowLeft, FileText, Scale, Shield, AlertCircle, Clock, Globe } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { SEO } from "@/components/SEO";
 import { SubscriptionActions } from "@/components/SubscriptionActions";
 
